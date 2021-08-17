@@ -76,11 +76,11 @@ class DetailViewController: UIViewController {
     private func loadScreen() {
         switch title {
         case "Characters":
-            fetchData(from: "https://rickandmortyapi.com/api/character")
+            fetchData(from: APIconstants.characters)
         case "Locations":
-            fetchData(from: "https://rickandmortyapi.com/api/location")
+            fetchData(from: APIconstants.locations)
         case "Episodes":
-            fetchData(from: "https://rickandmortyapi.com/api/episode")
+            fetchData(from: APIconstants.episodes)
         default:
             print("Incorrect word in switch statement in DetailVC")
             break

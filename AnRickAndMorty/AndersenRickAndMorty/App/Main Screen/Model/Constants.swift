@@ -15,4 +15,6 @@ enum ViewMetrics {
 
 enum APIconstants {
     static let characters: String = "https://rickandmortyapi.com/api/character"
+    static let locations: String = "https://rickandmortyapi.com/api/location"
+    static let episodes: String = "https://rickandmortyapi.com/api/episode"
 }

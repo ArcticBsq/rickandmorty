@@ -15,29 +15,17 @@ class ViewController: UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
         self.title = "Choose section"
         
-        setupView()
+        setupMainScreen()
     }
     
-    private lazy var labelStackView: UIStackView = {
-//        let charView = createButtonStack(title: "Characters", image: "charactersPic")
-//        let locView = createButtonStack(title: "Locations", image: "locationsPic")
-//        let epiView = createButtonStack(title: "Episodes", image: "episodesPic")
+    private func setupMainScreen() {
+        // Делаем кнопочки
+        let charView = UIFabric.shared().createButton(title: "Characters", image: "charactersPic", selector: #selector(openDetail))
+        let locView = UIFabric.shared().createButton(title: "Locations", image: "locationsPic", selector: #selector(openDetail))
+        let epiView = UIFabric.shared().createButton(title: "Episodes", image: "episodesPic", selector: #selector(openDetail))
+        // Делаем stackView из кнопочек
+        let labelStackView = UIFabric.shared().makeAStack(with: [charView, locView, epiView])
         
-        let charView = UIFabric.shared().createButtonStack(title: "Characters", image: "charactersPic", selector: #selector(openDetail))
-        let locView = UIFabric.shared().createButtonStack(title: "Locations", image: "locationsPic", selector: #selector(openDetail))
-        let epiView = UIFabric.shared().createButtonStack(title: "Episodes", image: "episodesPic", selector: #selector(openDetail))
-        
-        
-        
-        let stackView = UIStackView(arrangedSubviews: [charView, locView, epiView])
-        stackView.axis = .vertical
-        stackView.spacing = 30
-        stackView.distribution = .fillEqually
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
-    }()
-    
-    private func setupView() {
         view.addSubview(labelStackView)
         NSLayoutConstraint.activate([
             labelStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
@@ -47,6 +35,7 @@ class ViewController: UIViewController {
         ])
     }
     
+    // Навигация
     @objc func openDetail(_ sender: UIButton) {
         let vc = DetailViewController()
         self.navigationController?.pushViewController(vc, animated: true)

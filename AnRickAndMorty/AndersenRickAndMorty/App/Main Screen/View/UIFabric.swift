@@ -8,21 +8,35 @@
 import UIKit
 
 class UIFabric {
-    
+    // Синглтон, почему бы и нет
     static func shared() -> UIFabric {
         return UIFabric()
     }
     
     private init() { }
     
-    func createButtonStack(title: String, image: String, selector: Selector) -> UIView {
+    //MARK: магия с белым слоем
+    func imageOpacity(image: String) -> UIImage {
+        let img = UIImage(named: image)
+        let alphaImage = UIGraphicsImageRenderer(size: img?.size ?? .zero, format: UIGraphicsImageRendererFormat()).image { _ in
+            img?.draw(at: CGPoint.zero, blendMode: .normal, alpha: 0.5)
+        }
+        return alphaImage
+    }
+    
+    //MARK: функция по созданию начинки для кнопок стартового меню
+    // по составу: UIView -> Uibutton -> UIImageView -> UILabel
+    func createButton(title: String, image: String, selector: Selector) -> UIView {
         
         let view: UIView = {
+            
+        // 1 создаем нижний слой uiview
            let view = UIView()
             view.translatesAutoresizingMaskIntoConstraints = false
             view.layer.cornerRadius = ViewMetrics.corner
             view.clipsToBounds = true
             
+        // 2 создаем средний слой uibutton
             let button = UIButton()
             button.setImage(UIImage(named: image), for: .normal)
             button.layer.cornerRadius = ViewMetrics.corner
@@ -31,8 +45,20 @@ class UIFabric {
             button.addTarget(self, action: selector, for: .touchUpInside)
             button.setTitle(title, for: .normal)
             
-           
+        // 3 создаем верхний слой uimageview
+            let imageview: UIImageView = {
+                // Делаем картинку бледной
+                let image = imageOpacity(image: "white")
+                
+               let imgv = UIImageView()
+                imgv.image = image
+                imgv.translatesAutoresizingMaskIntoConstraints = false
+                imgv.layer.cornerRadius = ViewMetrics.corner
+                imgv.clipsToBounds = true
+                return imgv
+            }()
             
+        // 4 верхушка айсберга uilabel
             let label: UILabel = {
                let label = UILabel()
                 label.text = title
@@ -41,20 +67,6 @@ class UIFabric {
                 label.textAlignment = .center
                 label.translatesAutoresizingMaskIntoConstraints = false
                 return label
-            }()
-            //MARK: магия с белым слоем
-            let image = UIImage(named: "white")
-            let alphaImage = UIGraphicsImageRenderer(size: image?.size ?? .zero, format: UIGraphicsImageRendererFormat()).image { _ in
-                image?.draw(at: CGPoint.zero, blendMode: .normal, alpha: 0.5)
-            }
-            
-            let imageview: UIImageView = {
-               let imgv = UIImageView()
-                imgv.image = alphaImage
-                imgv.translatesAutoresizingMaskIntoConstraints = false
-                imgv.layer.cornerRadius = ViewMetrics.corner
-                imgv.clipsToBounds = true
-                return imgv
             }()
             
             view.addSubview(button)
@@ -80,5 +92,15 @@ class UIFabric {
                 return view
             }()
         return view
+    }
+    
+    //MARK: создание stackView
+    func makeAStack(with views: [UIView]) -> UIStackView {
+        let stackView = UIStackView(arrangedSubviews: views)
+        stackView.axis = .vertical
+        stackView.spacing = 30
+        stackView.distribution = .fillEqually
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }
 }

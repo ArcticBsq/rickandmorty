@@ -8,6 +8,7 @@
 import UIKit
 
 class CustomCell: UICollectionViewCell {
+    
     // Заднее изображение
     let backG: UIImageView = {
        let iv = UIImageView()
@@ -19,19 +20,18 @@ class CustomCell: UICollectionViewCell {
         iv.layer.cornerRadius = ViewMetrics.corner
         return iv
     }()
+    
     // Переднее изображение, белая прослойка
     let foreG: UIImageView = {
         let iv = UIImageView()
          iv.translatesAutoresizingMaskIntoConstraints = false
          iv.contentMode = .scaleAspectFill
          iv.clipsToBounds = true
-         let image = UIImage(named: "white")
-         let alphaImage = UIGraphicsImageRenderer(size: image?.size ?? .zero, format: UIGraphicsImageRendererFormat()).image { _ in
-            image?.draw(at: CGPoint.zero, blendMode: .normal, alpha: 0.5)
-         }
-         iv.image = alphaImage
+        let image = UIFabric.shared().imageOpacity(image: "white")
+         iv.image = image
          return iv
     }()
+    
     // Лейбл названия элемента
     let label: UILabel = {
         let label = UILabel()
