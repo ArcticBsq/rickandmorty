@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F608F28426CBE76A00BFCCF7 /* UIFabric.swift in Sources */ = {isa = PBXBuildFile; fileRef = F608F28326CBE76A00BFCCF7 /* UIFabric.swift */; };
 		F612BD9C26C13F3C00A628F3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F612BD9B26C13F3C00A628F3 /* Constants.swift */; };
 		F68FA7E526BA7F1500F8E379 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */; };
 		F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68FA7E626BA7F1500F8E379 /* SceneDelegate.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F608F28326CBE76A00BFCCF7 /* UIFabric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIFabric.swift; sourceTree = "<group>"; };
 		F612BD9B26C13F3C00A628F3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F68FA7E126BA7F1500F8E379 /* AndersenRickAndMorty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndersenRickAndMorty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -47,18 +49,106 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		F61AF6E826BFCC69003CF5FF /* Controller */ = {
+		F608F27526CBDA4500BFCCF7 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				F608F27626CBDA5100BFCCF7 /* Delegates */,
+				F608F27726CBDA5F00BFCCF7 /* Launch Screen */,
+				F608F27826CBDA8000BFCCF7 /* Main Screen */,
+				F608F27C26CBDAFB00BFCCF7 /* Detail Collection Screen */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F608F27626CBDA5100BFCCF7 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */,
+				F68FA7E626BA7F1500F8E379 /* SceneDelegate.swift */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
+		F608F27726CBDA5F00BFCCF7 /* Launch Screen */ = {
+			isa = PBXGroup;
+			children = (
+				F68FA7EF26BA7F1600F8E379 /* LaunchScreen.storyboard */,
+			);
+			path = "Launch Screen";
+			sourceTree = "<group>";
+		};
+		F608F27826CBDA8000BFCCF7 /* Main Screen */ = {
+			isa = PBXGroup;
+			children = (
+				F608F27B26CBDAD200BFCCF7 /* Model */,
+				F608F28226CBDC5C00BFCCF7 /* View */,
+				F608F27926CBDABA00BFCCF7 /* Controller */,
+			);
+			path = "Main Screen";
+			sourceTree = "<group>";
+		};
+		F608F27926CBDABA00BFCCF7 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				F68FA7E826BA7F1500F8E379 /* ViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
 		};
-		F61AF6EB26BFCCDE003CF5FF /* View */ = {
+		F608F27A26CBDAC800BFCCF7 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				F68FA7E826BA7F1500F8E379 /* ViewController.swift */,
+				F69A7B6226C2747800A7FBA4 /* CustomCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		F608F27B26CBDAD200BFCCF7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				F612BD9B26C13F3C00A628F3 /* Constants.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		F608F27C26CBDAFB00BFCCF7 /* Detail Collection Screen */ = {
+			isa = PBXGroup;
+			children = (
+				F608F27A26CBDAC800BFCCF7 /* View */,
+				F608F27D26CBDB4D00BFCCF7 /* Controller */,
+				F608F27F26CBDB6A00BFCCF7 /* API Model */,
+			);
+			path = "Detail Collection Screen";
+			sourceTree = "<group>";
+		};
+		F608F27D26CBDB4D00BFCCF7 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
 				F6CD4FA226C11E5000805C39 /* DetailViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		F608F27E26CBDB5900BFCCF7 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				F6CD4FA126C0FDEC00805C39 /* Model */,
+			);
+			path = "New Group";
+			sourceTree = "<group>";
+		};
+		F608F27F26CBDB6A00BFCCF7 /* API Model */ = {
+			isa = PBXGroup;
+			children = (
+				F69A7B5B26C25DC200A7FBA4 /* Object.swift */,
+			);
+			path = "API Model";
+			sourceTree = "<group>";
+		};
+		F608F28226CBDC5C00BFCCF7 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F608F28326CBE76A00BFCCF7 /* UIFabric.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -82,42 +172,19 @@
 		F68FA7E326BA7F1500F8E379 /* AndersenRickAndMorty */ = {
 			isa = PBXGroup;
 			children = (
-				F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */,
-				F68FA7E626BA7F1500F8E379 /* SceneDelegate.swift */,
-				F6CD4FA126C0FDEC00805C39 /* Model */,
-				F61AF6EB26BFCCDE003CF5FF /* View */,
-				F61AF6E826BFCC69003CF5FF /* Controller */,
+				F608F27526CBDA4500BFCCF7 /* App */,
+				F608F27E26CBDB5900BFCCF7 /* New Group */,
 				F68FA7ED26BA7F1600F8E379 /* Assets.xcassets */,
-				F68FA7EF26BA7F1600F8E379 /* LaunchScreen.storyboard */,
 				F68FA7F226BA7F1600F8E379 /* Info.plist */,
 				F68FA7F826BA855700F8E379 /* Untitled.pdf */,
 			);
 			path = AndersenRickAndMorty;
 			sourceTree = "<group>";
 		};
-		F69A7B5D26C25DC700A7FBA4 /* API models */ = {
-			isa = PBXGroup;
-			children = (
-				F69A7B5B26C25DC200A7FBA4 /* Object.swift */,
-			);
-			path = "API models";
-			sourceTree = "<group>";
-		};
-		F69A7B6426C2748300A7FBA4 /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				F69A7B6226C2747800A7FBA4 /* CustomCell.swift */,
-			);
-			path = Cells;
-			sourceTree = "<group>";
-		};
 		F6CD4FA126C0FDEC00805C39 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				F6CD4F9F26C0FDE600805C39 /* Networking.swift */,
-				F612BD9B26C13F3C00A628F3 /* Constants.swift */,
-				F69A7B6426C2748300A7FBA4 /* Cells */,
-				F69A7B5D26C25DC700A7FBA4 /* API models */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -199,6 +266,7 @@
 				F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */,
 				F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */,
 				F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */,
+				F608F28426CBE76A00BFCCF7 /* UIFabric.swift in Sources */,
 				F612BD9C26C13F3C00A628F3 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

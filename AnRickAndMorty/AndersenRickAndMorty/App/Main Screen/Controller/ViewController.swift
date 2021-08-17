@@ -19,9 +19,15 @@ class ViewController: UIViewController {
     }
     
     private lazy var labelStackView: UIStackView = {
-        let charView = createButtonStack(title: "Characters", image: "charactersPic")
-        let locView = createButtonStack(title: "Locations", image: "locationsPic")
-        let epiView = createButtonStack(title: "Episodes", image: "episodesPic")
+//        let charView = createButtonStack(title: "Characters", image: "charactersPic")
+//        let locView = createButtonStack(title: "Locations", image: "locationsPic")
+//        let epiView = createButtonStack(title: "Episodes", image: "episodesPic")
+        
+        let charView = UIFabric.shared().createButtonStack(title: "Characters", image: "charactersPic")
+        let locView = UIFabric.shared().createButtonStack(title: "Locations", image: "locationsPic")
+        let epiView = UIFabric.shared().createButtonStack(title: "Episodes", image: "episodesPic")
+        
+        
         
         let stackView = UIStackView(arrangedSubviews: [charView, locView, epiView])
         stackView.axis = .vertical
@@ -47,13 +53,6 @@ class ViewController: UIViewController {
         vc.titleText = sender.currentTitle
     }
 
-    
-    
-    
-    
-    
-    
-    
     
     
     
