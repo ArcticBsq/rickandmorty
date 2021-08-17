@@ -15,7 +15,7 @@ class UIFabric {
     
     private init() { }
     
-    func createButtonStack(title: String, image: String) -> UIView {
+    func createButtonStack(title: String, image: String, selector: Selector) -> UIView {
         
         let view: UIView = {
            let view = UIView()
@@ -28,7 +28,7 @@ class UIFabric {
             button.layer.cornerRadius = ViewMetrics.corner
             button.clipsToBounds = true
             button.translatesAutoresizingMaskIntoConstraints = false
-            
+            button.addTarget(self, action: selector, for: .touchUpInside)
             button.setTitle(title, for: .normal)
             
            

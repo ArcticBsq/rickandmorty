@@ -23,9 +23,9 @@ class ViewController: UIViewController {
 //        let locView = createButtonStack(title: "Locations", image: "locationsPic")
 //        let epiView = createButtonStack(title: "Episodes", image: "episodesPic")
         
-        let charView = UIFabric.shared().createButtonStack(title: "Characters", image: "charactersPic")
-        let locView = UIFabric.shared().createButtonStack(title: "Locations", image: "locationsPic")
-        let epiView = UIFabric.shared().createButtonStack(title: "Episodes", image: "episodesPic")
+        let charView = UIFabric.shared().createButtonStack(title: "Characters", image: "charactersPic", selector: #selector(openDetail))
+        let locView = UIFabric.shared().createButtonStack(title: "Locations", image: "locationsPic", selector: #selector(openDetail))
+        let epiView = UIFabric.shared().createButtonStack(title: "Episodes", image: "episodesPic", selector: #selector(openDetail))
         
         
         
