@@ -57,6 +57,8 @@ class DetailObjectController: UIViewController {
                 nameLLabel.textColor = Colors.systemGreen
                 
                 nameRLabel.text = "\(avatar!.name)"
+                nameRLabel.font = UIFont.systemFont(ofSize: 8)
+                print(avatar?.name)
                 nameRLabel.textColor = Colors.systemWhite
                 
                 nameRLabel.text = "\(self)"
