@@ -10,7 +10,9 @@ import UIKit
 class DetailViewController: UIViewController {
     var objects = [Package]() {
         didSet {
-            print(objects)
+            DispatchQueue.main.async {
+                self.loadCollection()
+            }
         }
     }
     
@@ -21,10 +23,10 @@ class DetailViewController: UIViewController {
 
         view.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
         title = titleText
-        
+        // 1 activity indicator
+        loadIndicator()
+        // 2 загрузка из API
         loadObjects()
-        loadCollection()
-        
     }
     
     let collectionView: UICollectionView = {
@@ -36,8 +38,6 @@ class DetailViewController: UIViewController {
         cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
         return cv
     }()
-    
-    
     
     // Настройка collection view
     private func loadCollection() {
@@ -52,6 +52,8 @@ class DetailViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        
+        indicator.stopAnimating()
     }
     
     // Работа с сетью.
@@ -63,23 +65,23 @@ class DetailViewController: UIViewController {
             
             let task = URLSession.shared.dataTask(with: url) { data, resp, error in
                 guard let data = data else {
-                    
                     print("data was nil")
+                    self.indicator.stopAnimating()
                     return
                 }
                 
                 guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
                     print("Couldn't decode JSON")
-                    
+                    self.indicator.stopAnimating()
                     return
                 }
                 let result = list.results
                 self.objects += result
-                
             }
             task.resume()
     }
-    
+    // MARK: загрузка из API
+    // элементов package в массив objects
     private func loadObjects() {
         switch title {
         case "Characters":
@@ -95,6 +97,17 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: создание activity indicator
+    let indicator: UIActivityIndicatorView = {
+        let indicator = UIFabric.shared().makeActivityIndicator()
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    private func loadIndicator() {
+        view.addSubview(indicator)
+        indicator.center = self.view.center
+        indicator.startAnimating()
+    }
     
 }
 
@@ -140,6 +153,4 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
                 
         return cell
     }
-    
-    
 }

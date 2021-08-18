@@ -104,6 +104,9 @@ class UIFabric {
         return stackView
     }
     
-  
+    func makeActivityIndicator() -> UIActivityIndicatorView {
+        let view = UIActivityIndicatorView(style: .large)
+        return view
+    }
     
 }
