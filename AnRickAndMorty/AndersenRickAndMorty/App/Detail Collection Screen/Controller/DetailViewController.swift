@@ -22,28 +22,9 @@ class DetailViewController: UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
         title = titleText
         
+        loadObjects()
         loadCollection()
-        loadScreen()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        self.view.addSubview(activityIndicator)
-        activityIndicator.hidesWhenStopped = true
-        activityIndicator.center = self.view.center
-        activityIndicator.startAnimating()
         
-        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async { [self] in
-            loadScreen()
-        }
-        
-        DispatchQueue.main.async {
-            UIView.animate(withDuration: 1, delay: 1, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                self.collectionView.reloadData()
-                self.collectionView.alpha = 1
-                self.activityIndicator.stopAnimating()
-            }, completion: nil)
-         }
     }
     
     let collectionView: UICollectionView = {
@@ -56,10 +37,11 @@ class DetailViewController: UIViewController {
         return cv
     }()
     
-    let activityIndicator = UIFabric.shared().makeActivityIndicator()
+    
     
     // Настройка collection view
     private func loadCollection() {
+        
         view.addSubview(collectionView)
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -76,25 +58,29 @@ class DetailViewController: UIViewController {
     // MARK: Нужно вынести в NetworkManager
     // но при выносе и вызове массив оказывается пустым, не работает
     private func fetchData(from: String) {
-        guard let url = URL(string: from) else { return }
         
-        let task = URLSession.shared.dataTask(with: url) { data, resp, error in
-            guard let data = data else {
-                print("data was nil")
-                return
-            }
+            guard let url = URL(string: from) else { return }
             
-            guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
-                print("Couldn't decode JSON")
-                return
+            let task = URLSession.shared.dataTask(with: url) { data, resp, error in
+                guard let data = data else {
+                    
+                    print("data was nil")
+                    return
+                }
+                
+                guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
+                    print("Couldn't decode JSON")
+                    
+                    return
+                }
+                let result = list.results
+                self.objects += result
+                
             }
-            
-            self.objects = list.results
-        }
-        task.resume()
+            task.resume()
     }
     
-    private func loadScreen() {
+    private func loadObjects() {
         switch title {
         case "Characters":
             fetchData(from: APIconstants.characters)
@@ -108,8 +94,11 @@ class DetailViewController: UIViewController {
         }
     }
     
+    //MARK: создание activity indicator
+    
 }
 
+//MARK: Extension
 extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (collectionView.frame.width-15)/2, height: collectionView.frame.width/1.8)

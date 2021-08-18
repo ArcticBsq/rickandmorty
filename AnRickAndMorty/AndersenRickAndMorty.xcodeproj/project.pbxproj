@@ -19,6 +19,7 @@
 		F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69A7B6226C2747800A7FBA4 /* CustomCell.swift */; };
 		F6CD4FA026C0FDE600805C39 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD4F9F26C0FDE600805C39 /* Networking.swift */; };
 		F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD4FA226C11E5000805C39 /* DetailViewController.swift */; };
+		F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7BA6626CCF41700F04FD5 /* NetManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		F69A7B6226C2747800A7FBA4 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		F6CD4F9F26C0FDE600805C39 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		F6CD4FA226C11E5000805C39 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		F6E7BA6626CCF41700F04FD5 /* NetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				F612BD9B26C13F3C00A628F3 /* Constants.swift */,
+				F6E7BA6626CCF41700F04FD5 /* NetManager.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				F69A7B5C26C25DC200A7FBA4 /* Object.swift in Sources */,
 				F68FA7E926BA7F1500F8E379 /* ViewController.swift in Sources */,
 				F6CD4FA026C0FDE600805C39 /* Networking.swift in Sources */,
+				F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */,
 				F68FA7E526BA7F1500F8E379 /* AppDelegate.swift in Sources */,
 				F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */,
 				F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */,
