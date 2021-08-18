@@ -103,4 +103,10 @@ class UIFabric {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
+    
+    //MARK: создание activity indicator
+    func makeActivityIndicator() -> UIActivityIndicatorView {
+        let view = UIActivityIndicatorView(style: .large)
+        return view
+    }
 }

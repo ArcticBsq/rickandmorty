@@ -14,16 +14,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    let collectionView: UICollectionView = {
-       let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.translatesAutoresizingMaskIntoConstraints = false
-    
-        cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
-        return cv
-    }()
-    
     var titleText: String? = nil
     
     override func viewDidLoad() {
@@ -36,10 +26,41 @@ class DetailViewController: UIViewController {
         loadScreen()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.view.addSubview(activityIndicator)
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.center = self.view.center
+        activityIndicator.startAnimating()
+        
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async { [self] in
+            loadScreen()
+        }
+        
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 1, delay: 1, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                self.collectionView.reloadData()
+                self.collectionView.alpha = 1
+                self.activityIndicator.stopAnimating()
+            }, completion: nil)
+         }
+    }
+    
+    let collectionView: UICollectionView = {
+       let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
+        cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
+        return cv
+    }()
+    
+    let activityIndicator = UIFabric.shared().makeActivityIndicator()
+    
     // Настройка collection view
     private func loadCollection() {
         view.addSubview(collectionView)
-        collectionView.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
         collectionView.dataSource = self
         collectionView.delegate = self
         
