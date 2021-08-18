@@ -10,19 +10,11 @@ import UIKit
 class DetailViewController: UIViewController {
     var objects = [Package]() {
         didSet {
-            print(objects)
+            DispatchQueue.main.async {
+                self.loadCollection()
+            }
         }
     }
-    
-    let collectionView: UICollectionView = {
-       let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.translatesAutoresizingMaskIntoConstraints = false
-    
-        cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
-        return cv
-    }()
     
     var titleText: String? = nil
     
@@ -31,15 +23,26 @@ class DetailViewController: UIViewController {
 
         view.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
         title = titleText
-        
-        loadCollection()
-        loadScreen()
+        // 1 activity indicator
+        loadIndicator()
+        // 2 загрузка из API
+        loadObjects()
     }
+    
+    let collectionView: UICollectionView = {
+       let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.translatesAutoresizingMaskIntoConstraints = false
+        cv.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
+        cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
+        return cv
+    }()
     
     // Настройка collection view
     private func loadCollection() {
+        
         view.addSubview(collectionView)
-        collectionView.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -49,31 +52,37 @@ class DetailViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        
+        indicator.stopAnimating()
     }
     
     // Работа с сетью.
     // MARK: Нужно вынести в NetworkManager
     // но при выносе и вызове массив оказывается пустым, не работает
     private func fetchData(from: String) {
-        guard let url = URL(string: from) else { return }
         
-        let task = URLSession.shared.dataTask(with: url) { data, resp, error in
-            guard let data = data else {
-                print("data was nil")
-                return
-            }
+            guard let url = URL(string: from) else { return }
             
-            guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
-                print("Couldn't decode JSON")
-                return
+            let task = URLSession.shared.dataTask(with: url) { data, resp, error in
+                guard let data = data else {
+                    print("data was nil")
+                    self.indicator.stopAnimating()
+                    return
+                }
+                
+                guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
+                    print("Couldn't decode JSON")
+                    self.indicator.stopAnimating()
+                    return
+                }
+                let result = list.results
+                self.objects += result
             }
-            
-            self.objects = list.results
-        }
-        task.resume()
+            task.resume()
     }
-    
-    private func loadScreen() {
+    // MARK: загрузка из API
+    // элементов package в массив objects
+    private func loadObjects() {
         switch title {
         case "Characters":
             fetchData(from: APIconstants.characters)
@@ -87,8 +96,22 @@ class DetailViewController: UIViewController {
         }
     }
     
+    //MARK: создание activity indicator
+    let indicator: UIActivityIndicatorView = {
+        let indicator = UIFabric.shared().makeActivityIndicator()
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    private func loadIndicator() {
+        view.addSubview(indicator)
+        indicator.center = self.view.center
+        indicator.startAnimating()
+    }
+    
 }
 
+//MARK: Extension
 extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (collectionView.frame.width-15)/2, height: collectionView.frame.width/1.8)
@@ -130,6 +153,4 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
                 
         return cell
     }
-    
-    
 }
