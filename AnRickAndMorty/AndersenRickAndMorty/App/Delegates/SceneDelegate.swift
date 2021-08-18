@@ -15,12 +15,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         //MARK: Создание nav controller в коде
         let nav = UINavigationController()
-        let mainView = ViewController(nibName: nil, bundle: nil)
+        let mainView = MainViewController(nibName: nil, bundle: nil)
         nav.viewControllers = [mainView]
-        nav.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: #colorLiteral(red: 0.7111499906, green: 0.84983325, blue: 0.2519544065, alpha: 1), NSAttributedString.Key.font : UIFont(name: "Apple SD Gothic Neo", size: 24)!]
+        nav.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Colors.systemGreen, NSAttributedString.Key.font : UIFont(name: "Apple SD Gothic Neo", size: 24)!]
         // Цвет nav bar
-        UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.7111499906, green: 0.84983325, blue: 0.2519544065, alpha: 1)
-        UINavigationBar.appearance().tintColor = #colorLiteral(red: 0.7111499906, green: 0.84983325, blue: 0.2519544065, alpha: 1)
+        UINavigationBar.appearance().barTintColor = Colors.systemGreen
+        UINavigationBar.appearance().tintColor = Colors.systemGreen
         
         // Убрать разделительную линию nav controller
         nav.navigationBar.setBackgroundImage(UIImage(), for:.default)

@@ -18,3 +18,9 @@ enum APIconstants {
     static let locations: String = "https://rickandmortyapi.com/api/location"
     static let episodes: String = "https://rickandmortyapi.com/api/episode"
 }
+
+enum Colors {
+    static let systemGreen: UIColor = #colorLiteral(red: 0.7111499906, green: 0.84983325, blue: 0.2519544065, alpha: 1)
+    static let systemBack: UIColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
+    static let systemWhite: UIColor = .white
+}

@@ -14,6 +14,7 @@ struct Package: Codable {
     let image: String?
     let status: String?
     let gender: String?
+    let species: String?
     
     
 }
