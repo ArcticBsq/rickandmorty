@@ -10,12 +10,17 @@ import Foundation
 struct Package: Codable {
     // Общее для всех
     let id: Int
+    // Character
     let name: String
     let image: String?
     let status: String?
     let gender: String?
     let species: String?
-    
+    // Location
+    let dimension: String?
+    let type: String?
+//    // Episode
+    let air_date: String?
     
 }
 

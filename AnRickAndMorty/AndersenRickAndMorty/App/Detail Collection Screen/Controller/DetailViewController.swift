@@ -157,5 +157,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         let vc = DetailObjectController()
         self.navigationController?.pushViewController(vc, animated: true)
         vc.avatar = object
+        let cell = collectionView.cellForItem(at: indexPath) as! CustomCell
+        vc.image = cell.backG.image
     }
 }
