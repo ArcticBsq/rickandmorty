@@ -28,6 +28,7 @@ class DetailViewController: UIViewController {
         loadIndicator()
         // 2 загрузка из API
         loadObjects()
+        setupSearchController()
     }
     
     //MARK: создание collection view
@@ -49,7 +50,7 @@ class DetailViewController: UIViewController {
         collectionView.delegate = self
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 15),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -107,25 +108,80 @@ class DetailViewController: UIViewController {
         activityIndicator.startAnimating()
     }
     
+    //MARK: Search Controller
+    private var filteredObjects = [Package]()
+    
+    private var isSearchBarEmpty: Bool {
+      return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    private var isFiltering: Bool {
+      return searchController.isActive && !isSearchBarEmpty
+    }
+
+    
+    private func filterContentForSearchText(_ searchText: String) {
+      filteredObjects = objects.filter { (object: Package) -> Bool in
+        return object.name.lowercased().contains(searchText.lowercased())
+      }
+      
+      collectionView.reloadData()
+        print("Reloaded")
+    }
+
+
+    
+    let searchController = UISearchController(searchResultsController: nil)
+    private func setupSearchController() {
+        // Информирует о любых изменениях текста
+        searchController.searchResultsUpdater = self
+        // Не скрывать контроллер, где будут отображены результаты
+        searchController.obscuresBackgroundDuringPresentation = false
+        // Что будет в placeholder
+        searchController.searchBar.placeholder = "Введите имя"
+        // Добавляем в навигационную панель
+        navigationItem.searchController = searchController
+        // При переходе на другой контроллер search скроется
+        definesPresentationContext = true
+    }
+    
 }
 
 //MARK: Extension
+
+extension DetailViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        let searchBar = searchController.searchBar
+        filterContentForSearchText(searchBar.text!)
+    }
+}
+
 extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (collectionView.frame.width-15)/2, height: collectionView.frame.width/1.8)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if isFiltering {
+            return filteredObjects.count
+        }
         return objects.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
+        
         cell.backgroundColor = .gray
         cell.layer.cornerRadius = 25
         cell.clipsToBounds = true
 
-        let object = objects[indexPath.row]
+        let object: Package
+        
+        if isFiltering {
+            object = filteredObjects[indexPath.row]
+        } else {
+            object = objects[indexPath.row]
+        }
         
         switch title {
         case "Characters":
@@ -153,7 +209,15 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let object = objects[indexPath.row]
+        
+        let object: Package
+        
+        if isFiltering {
+            object = filteredObjects[indexPath.row]
+        } else {
+            object = objects[indexPath.row
+            ]
+        }
         let vc = DetailObjectController()
         self.navigationController?.pushViewController(vc, animated: true)
         vc.avatar = object

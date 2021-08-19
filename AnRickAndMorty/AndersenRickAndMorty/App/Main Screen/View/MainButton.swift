@@ -35,7 +35,7 @@ class MainButtonView {
         // 4 верхушка айсберга uilabel
         let label = UIFabric.shared().makeLabel()
             label.text = title
-        label.font = UIFont.boldSystemFont(ofSize: <#T##CGFloat#>)
+        label.font = UIFont.boldSystemFont(ofSize: ViewMetrics.MainScreenButtonFontSize)
         
             view.addSubview(button)
             view.addSubview(imageview)
