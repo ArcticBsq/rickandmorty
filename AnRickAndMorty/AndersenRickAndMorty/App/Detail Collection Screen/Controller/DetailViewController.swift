@@ -16,12 +16,13 @@ class DetailViewController: UIViewController {
         }
     }
     
+    // Переменная куда передается название экрана из предыдущего VC
     var titleText: String? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
+        view.backgroundColor = Colors.systemBack
         title = titleText
         // 1 activity indicator
         loadIndicator()
@@ -29,12 +30,13 @@ class DetailViewController: UIViewController {
         loadObjects()
     }
     
+    //MARK: создание collection view
     let collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.backgroundColor = #colorLiteral(red: 0.1365897357, green: 0.1572630107, blue: 0.1870015562, alpha: 1)
+        cv.backgroundColor = Colors.systemBack
         cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
         return cv
     }()
@@ -53,7 +55,7 @@ class DetailViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
-        indicator.stopAnimating()
+        activityIndicator.stopAnimating()
     }
     
     // Работа с сетью.
@@ -66,13 +68,13 @@ class DetailViewController: UIViewController {
             let task = URLSession.shared.dataTask(with: url) { data, resp, error in
                 guard let data = data else {
                     print("data was nil")
-                    self.indicator.stopAnimating()
+                    self.activityIndicator.stopAnimating()
                     return
                 }
                 
                 guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
                     print("Couldn't decode JSON")
-                    self.indicator.stopAnimating()
+                    self.activityIndicator.stopAnimating()
                     return
                 }
                 let result = list.results
@@ -97,16 +99,12 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: создание activity indicator
-    let indicator: UIActivityIndicatorView = {
-        let indicator = UIFabric.shared().makeActivityIndicator()
-        indicator.hidesWhenStopped = true
-        return indicator
-    }()
+    let activityIndicator = UIFabric.shared().makeActivityIndicator()
     
     private func loadIndicator() {
-        view.addSubview(indicator)
-        indicator.center = self.view.center
-        indicator.startAnimating()
+        view.addSubview(activityIndicator)
+        activityIndicator.center = self.view.center
+        activityIndicator.startAnimating()
     }
     
 }
@@ -152,5 +150,14 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         }
                 
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let object = objects[indexPath.row]
+        let vc = DetailObjectController()
+        self.navigationController?.pushViewController(vc, animated: true)
+        vc.avatar = object
+        let cell = collectionView.cellForItem(at: indexPath) as! CustomCell
+        vc.image = cell.backG.image
     }
 }

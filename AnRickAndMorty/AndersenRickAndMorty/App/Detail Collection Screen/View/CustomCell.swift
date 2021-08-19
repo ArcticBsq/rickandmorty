@@ -11,35 +11,27 @@ class CustomCell: UICollectionViewCell {
     
     // Заднее изображение
     let backG: UIImageView = {
-       let iv = UIImageView()
-        iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.contentMode = .scaleAspectFill
-        iv.clipsToBounds = true
+        let iv = UIFabric.shared().makeImageView()
         //MARK: Тест uiimage
         iv.image = UIImage(named: "noResponsePic")
-        iv.layer.cornerRadius = ViewMetrics.corner
         return iv
     }()
     
+    
     // Переднее изображение, белая прослойка
     let foreG: UIImageView = {
-        let iv = UIImageView()
-         iv.translatesAutoresizingMaskIntoConstraints = false
-         iv.contentMode = .scaleAspectFill
-         iv.clipsToBounds = true
+        let iv = UIFabric.shared().makeImageView()
         let image = UIFabric.shared().imageOpacity(image: "white")
-         iv.image = image
-         return iv
+        iv.image = image
+        iv.layer.cornerRadius = 0
+        return iv
     }()
     
     // Лейбл названия элемента
     let label: UILabel = {
-        let label = UILabel()
+        let label = UIFabric.shared().makeLabel()
         label.text = "Morty"
-         label.textColor = .black
-         label.font = UIFont.systemFont(ofSize: 20)
-         label.textAlignment = .center
-         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 20)
         label.numberOfLines = 0
          return label
     }()
