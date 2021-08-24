@@ -19,6 +19,7 @@
 		F68FA7F926BA855700F8E379 /* Untitled.pdf in Resources */ = {isa = PBXBuildFile; fileRef = F68FA7F826BA855700F8E379 /* Untitled.pdf */; };
 		F69A7B5C26C25DC200A7FBA4 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69A7B5B26C25DC200A7FBA4 /* Object.swift */; };
 		F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69A7B6226C2747800A7FBA4 /* CustomCell.swift */; };
+		F6BD875026D5267B0037D425 /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6BD874F26D5267B0037D425 /* FilterViewController.swift */; };
 		F6CD4FA026C0FDE600805C39 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD4F9F26C0FDE600805C39 /* Networking.swift */; };
 		F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD4FA226C11E5000805C39 /* DetailViewController.swift */; };
 		F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7BA6626CCF41700F04FD5 /* NetManager.swift */; };
@@ -39,6 +40,7 @@
 		F68FA7F826BA855700F8E379 /* Untitled.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = Untitled.pdf; sourceTree = "<group>"; };
 		F69A7B5B26C25DC200A7FBA4 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		F69A7B6226C2747800A7FBA4 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
+		F6BD874F26D5267B0037D425 /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FilterViewController.swift; path = "AndersenRickAndMorty/App/Main Screen/View/FilterViewController.swift"; sourceTree = SOURCE_ROOT; };
 		F6CD4F9F26C0FDE600805C39 /* Networking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networking.swift; sourceTree = "<group>"; };
 		F6CD4FA226C11E5000805C39 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		F6E7BA6626CCF41700F04FD5 /* NetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetManager.swift; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				F608F27826CBDA8000BFCCF7 /* Main Screen */,
 				F608F27C26CBDAFB00BFCCF7 /* Detail Collection Screen */,
 				F639930226CD15A600A3ABB3 /* Detail Object Screen */,
+				F6BD874E26D526120037D425 /* Filter Screen */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -206,6 +209,14 @@
 			path = AndersenRickAndMorty;
 			sourceTree = "<group>";
 		};
+		F6BD874E26D526120037D425 /* Filter Screen */ = {
+			isa = PBXGroup;
+			children = (
+				F6BD874F26D5267B0037D425 /* FilterViewController.swift */,
+			);
+			path = "Filter Screen";
+			sourceTree = "<group>";
+		};
 		F6CD4FA126C0FDEC00805C39 /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +302,7 @@
 				F68FA7E526BA7F1500F8E379 /* AppDelegate.swift in Sources */,
 				F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */,
 				F639930926CD1ADE00A3ABB3 /* MainButton.swift in Sources */,
+				F6BD875026D5267B0037D425 /* FilterViewController.swift in Sources */,
 				F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */,
 				F639930426CD15EB00A3ABB3 /* DetailObjectController.swift in Sources */,
 				F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */,
