@@ -12,25 +12,20 @@ class CustomCell: UICollectionViewCell {
     // Заднее изображение
     let backG: UIImageView = {
         let iv = UIFabric.shared().makeImageView()
-        //MARK: Тест uiimage
-        iv.image = UIImage(named: "noResponsePic")
         return iv
     }()
-    
     
     // Переднее изображение, белая прослойка
     let foreG: UIImageView = {
         let iv = UIFabric.shared().makeImageView()
-        let image = UIFabric.shared().imageOpacity(image: "white")
-        iv.image = image
         iv.layer.cornerRadius = 0
+        iv.backgroundColor = UIColor.white.withAlphaComponent(0.5)
         return iv
     }()
     
     // Лейбл названия элемента
     let label: UILabel = {
         let label = UIFabric.shared().makeLabel()
-        label.text = "Morty"
         label.font = UIFont.systemFont(ofSize: 20)
         label.numberOfLines = 0
          return label
@@ -49,6 +44,9 @@ class CustomCell: UICollectionViewCell {
         contentView.addSubview(backG)
         contentView.addSubview(foreG)
         contentView.addSubview(label)
+        self.layer.cornerRadius = 25
+        self.backgroundColor = .gray
+        self.clipsToBounds = true
         
         NSLayoutConstraint.activate([
             backG.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),

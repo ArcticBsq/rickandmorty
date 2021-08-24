@@ -215,8 +215,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         if isFiltering {
             object = filteredObjects[indexPath.row]
         } else {
-            object = objects[indexPath.row
-            ]
+            object = objects[indexPath.row]
         }
         let vc = DetailObjectController()
         self.navigationController?.pushViewController(vc, animated: true)

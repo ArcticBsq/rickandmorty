@@ -15,15 +15,6 @@ class UIFabric {
     
     private init() { }
     
-    //MARK: магия с белым слоем
-    func imageOpacity(image: String) -> UIImage {
-        let img = UIImage(named: image)
-        let alphaImage = UIGraphicsImageRenderer(size: img?.size ?? .zero, format: UIGraphicsImageRendererFormat()).image { _ in
-            img?.draw(at: CGPoint.zero, blendMode: .normal, alpha: 0.5)
-        }
-        return alphaImage
-    }
-    
     func makeView() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
