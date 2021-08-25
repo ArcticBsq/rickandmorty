@@ -14,7 +14,7 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view.
         view.backgroundColor = Colors.systemBack
         self.title = "Choose section"
-        
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
         setupMainScreen()
     }
     
