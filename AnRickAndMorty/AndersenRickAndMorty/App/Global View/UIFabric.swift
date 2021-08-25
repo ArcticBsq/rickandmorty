@@ -15,15 +15,6 @@ class UIFabric {
     
     private init() { }
     
-    //MARK: магия с белым слоем
-    func imageOpacity(image: String) -> UIImage {
-        let img = UIImage(named: image)
-        let alphaImage = UIGraphicsImageRenderer(size: img?.size ?? .zero, format: UIGraphicsImageRendererFormat()).image { _ in
-            img?.draw(at: CGPoint.zero, blendMode: .normal, alpha: 0.5)
-        }
-        return alphaImage
-    }
-    
     func makeView() -> UIView {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -73,6 +64,18 @@ class UIFabric {
         return view
     }
     
-    
+    func makeBarButton(_ target: Any?, action: Selector, imageName: String, size:CGSize = CGSize(width: 32, height: 32)) -> UIBarButtonItem {
+        let button = UIButton(type: .system)
+        
+        button.setImage(UIImage(named: imageName), for: .normal)
+        button.addTarget(target, action: action, for: .touchUpInside)
+
+        let menuBarItem = UIBarButtonItem(customView: button)
+        menuBarItem.customView?.translatesAutoresizingMaskIntoConstraints = false
+        menuBarItem.customView?.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        menuBarItem.customView?.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+
+        return menuBarItem
+    }
     
 }

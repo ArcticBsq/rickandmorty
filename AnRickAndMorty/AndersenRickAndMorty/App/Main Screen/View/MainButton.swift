@@ -29,8 +29,8 @@ class MainButtonView {
         // 3 создаем верхний слой uimageview
         let imageview = UIFabric.shared().makeImageView()
         // Делаем картинку бледной
-        let image = UIFabric.shared().imageOpacity(image: "white")
-            imageview.image = image
+                
+        imageview.backgroundColor = UIColor.white.withAlphaComponent(0.5)
             
         // 4 верхушка айсберга uilabel
         let label = UIFabric.shared().makeLabel()

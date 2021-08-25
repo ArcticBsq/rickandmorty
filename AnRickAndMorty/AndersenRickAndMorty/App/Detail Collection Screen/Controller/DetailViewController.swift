@@ -8,13 +8,7 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-    var objects = [Package]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.loadCollection()
-            }
-        }
-    }
+    var objects = [Package]()
     
     // Переменная куда передается название экрана из предыдущего VC
     var titleText: String? = nil
@@ -29,6 +23,16 @@ class DetailViewController: UIViewController {
         // 2 загрузка из API
         loadObjects()
         setupSearchController()
+        // 3 загрузка коллекции
+        loadCollection()
+        
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filterIcon1x"), style: .done, target: self, action: #selector(openFilterDetail))
+    }
+    
+    
+    @objc func openFilterDetail() {
+        let vc = FilterViewController()
+        self.navigationController?.pushViewController(vc, animated: true)
     }
     
     //MARK: создание collection view
@@ -149,6 +153,28 @@ class DetailViewController: UIViewController {
 
 //MARK: Extension
 
+extension UIBarButtonItem {
+
+    static func menuButton(_ target: Any?,
+                           action: Selector,
+                           imageName: String,
+                           size:CGSize = CGSize(width: 32, height: 32),
+                           tintColor:UIColor?) -> UIBarButtonItem
+    {
+        let button = UIButton(type: .system)
+        button.tintColor = tintColor
+        button.setImage(UIImage(named: imageName), for: .normal)
+        button.addTarget(target, action: action, for: .touchUpInside)
+
+        let menuBarItem = UIBarButtonItem(customView: button)
+        menuBarItem.customView?.translatesAutoresizingMaskIntoConstraints = false
+        menuBarItem.customView?.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+        menuBarItem.customView?.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+
+        return menuBarItem
+    }
+}
+
 extension DetailViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
@@ -215,8 +241,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         if isFiltering {
             object = filteredObjects[indexPath.row]
         } else {
-            object = objects[indexPath.row
-            ]
+            object = objects[indexPath.row]
         }
         let vc = DetailObjectController()
         self.navigationController?.pushViewController(vc, animated: true)
