@@ -8,15 +8,18 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-    var objects = [Package]()
+    private var objects = [Package]()
     
-    // Переменная куда передается название экрана из предыдущего VC
+    // Переменная куда передается название экрана из ViewController
     var titleText: String? = nil
+    // Переменная в которой хранится следующая страница загрузки из API
+    private var nextPageToLoad: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = Colors.systemBack
+        // Передача названия страницы bp ViewController по нажатию кнопки
         title = titleText
         // 1 activity indicator
         loadIndicator()
@@ -25,23 +28,27 @@ class DetailViewController: UIViewController {
         setupSearchController()
         // 3 загрузка коллекции
         loadCollection()
-        
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "filterIcon1x"), style: .done, target: self, action: #selector(openFilterDetail))
+        // Кастомная иконка фильтра
+        self.navigationItem.rightBarButtonItem = UIFabric.shared().makeBarButton(self, action: #selector(openFilterDetail), imageName: "filterIcon2x", size: CGSize(width: 30, height: 30))
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
-    
-    @objc func openFilterDetail() {
+    //MARK: Navigation
+    // Навигация к FilterViewController - экрану фильтра
+    @objc private func openFilterDetail() {
         let vc = FilterViewController()
         self.navigationController?.pushViewController(vc, animated: true)
     }
     
-    //MARK: создание collection view
-    let collectionView: UICollectionView = {
+    //MARK: Collection View
+    // создание collection view
+    private let collectionView: UICollectionView = {
        let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = Colors.systemBack
+        // Регистрируем cell для object
         cv.register(CustomCell.self, forCellWithReuseIdentifier: "cell")
         return cv
     }()
@@ -63,8 +70,8 @@ class DetailViewController: UIViewController {
         activityIndicator.stopAnimating()
     }
     
-    // Работа с сетью.
-    // MARK: Нужно вынести в NetworkManager
+    //MARK: Работа с сетью.
+    // Нужно вынести в NetworkManager
     // но при выносе и вызове массив оказывается пустым, не работает
     private func fetchData(from: String) {
         
@@ -82,8 +89,10 @@ class DetailViewController: UIViewController {
                     self.activityIndicator.stopAnimating()
                     return
                 }
+                let nextPage = list.info.next
                 let result = list.results
                 self.objects += result
+                self.nextPageToLoad = nextPage
             }
             task.resume()
     }
@@ -104,7 +113,7 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: создание activity indicator
-    let activityIndicator = UIFabric.shared().makeActivityIndicator()
+    private let activityIndicator = UIFabric.shared().makeActivityIndicator()
     
     private func loadIndicator() {
         view.addSubview(activityIndicator)
@@ -114,28 +123,27 @@ class DetailViewController: UIViewController {
     
     //MARK: Search Controller
     private var filteredObjects = [Package]()
-    
+    // Для отслеживания изменений в тексте searc bar
     private var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
     }
-    
+    // Для отслеживания состояния фильтрации, True если идет поиск
     private var isFiltering: Bool {
       return searchController.isActive && !isSearchBarEmpty
     }
-
-    
+    // Функция возвращает отфилтрованный массив по критерию - "Содержится в имени object"
     private func filterContentForSearchText(_ searchText: String) {
       filteredObjects = objects.filter { (object: Package) -> Bool in
         return object.name.lowercased().contains(searchText.lowercased())
       }
       
       collectionView.reloadData()
+        //MARK: Bug
+        // дважды перезагружает, когда нажимается Cancel
         print("Reloaded")
     }
 
-
-    
-    let searchController = UISearchController(searchResultsController: nil)
+    private let searchController = UISearchController(searchResultsController: nil)
     private func setupSearchController() {
         // Информирует о любых изменениях текста
         searchController.searchResultsUpdater = self
@@ -148,33 +156,9 @@ class DetailViewController: UIViewController {
         // При переходе на другой контроллер search скроется
         definesPresentationContext = true
     }
-    
 }
 
 //MARK: Extension
-
-extension UIBarButtonItem {
-
-    static func menuButton(_ target: Any?,
-                           action: Selector,
-                           imageName: String,
-                           size:CGSize = CGSize(width: 32, height: 32),
-                           tintColor:UIColor?) -> UIBarButtonItem
-    {
-        let button = UIButton(type: .system)
-        button.tintColor = tintColor
-        button.setImage(UIImage(named: imageName), for: .normal)
-        button.addTarget(target, action: action, for: .touchUpInside)
-
-        let menuBarItem = UIBarButtonItem(customView: button)
-        menuBarItem.customView?.translatesAutoresizingMaskIntoConstraints = false
-        menuBarItem.customView?.heightAnchor.constraint(equalToConstant: size.height).isActive = true
-        menuBarItem.customView?.widthAnchor.constraint(equalToConstant: size.width).isActive = true
-
-        return menuBarItem
-    }
-}
-
 extension DetailViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
@@ -196,10 +180,6 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
-        
-        cell.backgroundColor = .gray
-        cell.layer.cornerRadius = 25
-        cell.clipsToBounds = true
 
         let object: Package
         
@@ -235,7 +215,6 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
         let object: Package
         
         if isFiltering {
@@ -249,4 +228,6 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         let cell = collectionView.cellForItem(at: indexPath) as! CustomCell
         vc.image = cell.backG.image
     }
+    
+    
 }

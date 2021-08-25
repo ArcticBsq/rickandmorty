@@ -57,7 +57,7 @@ class DetailObjectController: UIViewController {
             let stack = UIFabric.shared().makeAStack(with: [])
             
              let idStack: UIStackView = {
-                idLLabel.text = "ID: "
+                idLLabel.text = "ID:"
                 idLLabel.textColor = Colors.systemGreen
                 idLLabel.textAlignment = .left
                 idLLabel.backgroundColor = .blue
@@ -102,7 +102,7 @@ class DetailObjectController: UIViewController {
             
             if let status = avatar?.status {
                 let statusStack: UIStackView = {
-                   statusLLabel.text = "Status: "
+                   statusLLabel.text = "Status:"
                    statusLLabel.textColor = Colors.systemGreen
                     statusLLabel.textAlignment = .left
                     statusLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
@@ -124,7 +124,7 @@ class DetailObjectController: UIViewController {
             
             if let species = avatar?.species {
                 let speciesStack: UIStackView = {
-                   speciesLLabel.text = "Species: "
+                   speciesLLabel.text = "Species:"
                    speciesLLabel.textColor = Colors.systemGreen
                     speciesLLabel.textAlignment = .left
                     speciesLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
@@ -146,7 +146,7 @@ class DetailObjectController: UIViewController {
              
             if let gender = avatar?.gender {
                 let genderStack: UIStackView = {
-                   genderLLabel.text = "Gender: "
+                   genderLLabel.text = "Gender:"
                    genderLLabel.textColor = Colors.systemGreen
                     genderLLabel.textAlignment = .left
                     genderLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
@@ -168,7 +168,7 @@ class DetailObjectController: UIViewController {
             
             if let dimension = avatar?.dimension {
                 let dimensionStack: UIStackView = {
-                    dimensionLLabel.text = "Dimension: "
+                    dimensionLLabel.text = "Dimension:"
                     dimensionLLabel.textColor = Colors.systemGreen
                     dimensionLLabel.textAlignment = .left
                     dimensionLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
@@ -191,7 +191,7 @@ class DetailObjectController: UIViewController {
             if let type = avatar?.type {
                 if type.count > 1 {
                     let typeStack: UIStackView = {
-                        typeLLabel.text = "Type: "
+                        typeLLabel.text = "Type:"
                         typeLLabel.textColor = Colors.systemGreen
                         typeLLabel.textAlignment = .left
                         typeLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
@@ -215,7 +215,7 @@ class DetailObjectController: UIViewController {
             
             if let airDate = avatar?.air_date {
                 let airDateStack: UIStackView = {
-                    airDateLLabel.text = "Air date: "
+                    airDateLLabel.text = "Air date:"
                     airDateLLabel.textColor = Colors.systemGreen
                     airDateLLabel.textAlignment = .left
                     airDateLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
@@ -235,28 +235,7 @@ class DetailObjectController: UIViewController {
                 stack.addArrangedSubview(airDateStack)
             }
             
-//            if let episode = avatar?.episode {
-//                let episodeStack: UIStackView = {
-//                    episodeLLabel.text = "Episode: "
-//                    episodeLLabel.textColor = Colors.systemGreen
-//                    episodeLLabel.textAlignment = .left
-//                    episodeLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-//                    episodeLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-//
-//                    episodeRLabel.text = "\(episode)"
-//                    episodeRLabel.textColor = Colors.systemWhite
-//                    episodeRLabel.textAlignment = .left
-//                    episodeRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-//
-//                    let stack = UIFabric.shared().makeAStack(with: [episodeLLabel, episodeRLabel])
-//                    stack.axis = .horizontal
-//                    stack.distribution = .fill
-//
-//                   return stack
-//               }()
-//                stack.addArrangedSubview(episodeStack)
-//            }
-            stack.spacing = 10.0
+            stack.spacing = ViewMetrics.detailObjectStackSpacing
             stack.setContentHuggingPriority(.defaultHigh, for: .vertical)
             
             return stack

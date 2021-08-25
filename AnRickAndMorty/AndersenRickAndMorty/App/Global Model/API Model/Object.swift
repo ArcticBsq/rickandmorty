@@ -19,11 +19,17 @@ struct Package: Codable {
     // Location
     let dimension: String?
     let type: String?
-//    // Episode
+    // Episode
     let air_date: String?
     
 }
 
+struct information: Codable {
+    let next: String?
+    let prev: String?
+}
+
 struct Response: Codable {
+    var info: information
     var results: [Package]
 }

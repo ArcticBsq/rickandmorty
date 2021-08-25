@@ -64,7 +64,8 @@ class UIFabric {
         return view
     }
     
-    func makeBarButton(_ target: Any?, action: Selector, imageName: String, size:CGSize = CGSize(width: 32, height: 32)) -> UIBarButtonItem {
+    // Кастомная кнопка с image для nav bar
+    func makeBarButton(_ target: Any?, action: Selector, imageName: String, size: CGSize) -> UIBarButtonItem {
         let button = UIButton(type: .system)
         
         button.setImage(UIImage(named: imageName), for: .normal)
