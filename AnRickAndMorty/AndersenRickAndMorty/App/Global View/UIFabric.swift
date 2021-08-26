@@ -79,4 +79,14 @@ class UIFabric {
         return menuBarItem
     }
     
+    func makeCollectionView(scroll: UICollectionView.ScrollDirection, backColor: UIColor, cellIdentifier: String) -> UICollectionView {
+           let layout = UICollectionViewFlowLayout()
+            layout.scrollDirection = scroll
+            let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            cv.translatesAutoresizingMaskIntoConstraints = false
+            cv.backgroundColor = backColor
+            // Регистрируем cell для object
+            cv.register(CustomCell.self, forCellWithReuseIdentifier: cellIdentifier)
+            return cv
+    }
 }
