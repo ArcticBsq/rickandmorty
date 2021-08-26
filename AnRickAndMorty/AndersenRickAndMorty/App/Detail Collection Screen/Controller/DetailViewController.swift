@@ -130,6 +130,7 @@ extension DetailViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         let searchBar = searchController.searchBar
         filterContentForSearchText(searchBar.text!)
+        print("updateSearchResults")
     }
 }
 

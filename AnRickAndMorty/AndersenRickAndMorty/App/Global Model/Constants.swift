@@ -12,7 +12,7 @@ enum ViewMetrics {
     static let spacing: CGFloat = 20.0
     static let corner: CGFloat = 15.0
     static let detailObjectFontSize: CGFloat = 20.0
-    static let detailObjectStackSpacing: CGFloat = 10.0
+    static let detailObjectStackSpacing: CGFloat = 20.0
 }
 
 enum APIconstants {

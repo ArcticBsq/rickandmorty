@@ -2,7 +2,7 @@
 //  FilterViewController.swift
 //  AndersenRickAndMorty
 //
-//  Created by Илья Москалев on 24.08.2021.
+//  Created by Илья Москалев on 26.08.2021.
 //
 
 import UIKit
@@ -11,10 +11,9 @@ class FilterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = Colors.systemBack
+
         title = "Filter"
+        view.backgroundColor = Colors.systemBack
     }
-    
 
 }
