@@ -58,6 +58,7 @@
 		F608F27526CBDA4500BFCCF7 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				F6EB390126D77F99000FC816 /* Networking Service */,
 				F639930626CD164E00A3ABB3 /* Global Model */,
 				F639930526CD163000A3ABB3 /* Global View */,
 				F608F27626CBDA5100BFCCF7 /* Delegates */,
@@ -157,7 +158,6 @@
 			isa = PBXGroup;
 			children = (
 				F612BD9B26C13F3C00A628F3 /* Constants.swift */,
-				F6E7BA6626CCF41700F04FD5 /* NetManager.swift */,
 				F608F27F26CBDB6A00BFCCF7 /* API Model */,
 			);
 			path = "Global Model";
@@ -204,6 +204,14 @@
 				F6BD874F26D5267B0037D425 /* FilterViewController.swift */,
 			);
 			path = "Filter Screen";
+			sourceTree = "<group>";
+		};
+		F6EB390126D77F99000FC816 /* Networking Service */ = {
+			isa = PBXGroup;
+			children = (
+				F6E7BA6626CCF41700F04FD5 /* NetManager.swift */,
+			);
+			path = "Networking Service";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

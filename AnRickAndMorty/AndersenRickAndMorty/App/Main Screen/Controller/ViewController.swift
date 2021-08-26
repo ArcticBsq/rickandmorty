@@ -39,7 +39,7 @@ class MainViewController: UIViewController {
     @objc func openDetail(_ sender: UIButton) {
         let vc = DetailViewController()
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.titleText = sender.currentTitle
+        vc.title = sender.currentTitle
     }
 
     
