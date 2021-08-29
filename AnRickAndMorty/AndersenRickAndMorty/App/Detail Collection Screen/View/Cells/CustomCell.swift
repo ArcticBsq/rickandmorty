@@ -9,11 +9,18 @@ import UIKit
 
 class CustomCell: UICollectionViewCell {
     
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
+        setupview()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // Заднее изображение
-    let backG: UIImageView = {
-        let iv = UIFabric.shared().makeImageView()
-        return iv
-    }()
+    let backG = UIFabric.shared().makeImageView()
+        
     
     // Переднее изображение, белая прослойка
     let foreG: UIImageView = {
@@ -30,15 +37,6 @@ class CustomCell: UICollectionViewCell {
         label.numberOfLines = 0
          return label
     }()
-    
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
-        setupview()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     private func setupview() {
         contentView.addSubview(backG)
