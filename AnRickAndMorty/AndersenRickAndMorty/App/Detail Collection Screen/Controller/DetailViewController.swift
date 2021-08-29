@@ -8,7 +8,17 @@
 import UIKit
 
 class DetailViewController: UIViewController {
-    private var objects = [Package]()
+    private var objects = [Package]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+            
+        }
+    }
+    
+    private var currentPage = 1
+    private var totalPages: Int?
     
     // Переменная отображающая статус загрузки новых элементов из API
     var isLoading = false {
@@ -44,9 +54,20 @@ class DetailViewController: UIViewController {
     
     //MARK: Networking
     private func loadData() {
-        NetManager.shared().fetchData(url: NetManager.shared().getUrl(from: title!)) { objects, nextPage in
+        NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title!), page: currentPage) { objects, pages in
             self.objects = objects
-            self.nextPageToLoad = nextPage
+            self.totalPages = pages
+            self.currentPage += 1
+        }
+    }
+    
+    private func loadNextPage() {
+        if self.totalPages! >= currentPage {
+            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title!), page: currentPage) { objects, pages in
+                self.objects += objects
+                self.collectionView.reloadData()
+                self.isLoading = false
+            }
         }
     }
     
@@ -189,6 +210,20 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         vc.avatar = object
         let cell = collectionView.cellForItem(at: indexPath) as! CustomCell
         vc.image = cell.backG.image
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if !self.isLoading && (collectionView.contentOffset.y >= (collectionView.contentSize.height - collectionView.frame.size.height)) {
+                self.isLoading = true
+
+            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: self.title!), page: self.currentPage) { [weak self] objects, pages in
+                guard let strongSelf = self else { return }
+                strongSelf.isLoading = false
+                
+                strongSelf.objects += objects
+                strongSelf.currentPage += 1
+            }
+        }
     }
     
 }

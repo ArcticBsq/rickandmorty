@@ -27,6 +27,7 @@ struct Package: Codable {
 struct information: Codable {
     let next: String?
     let prev: String?
+    let pages: Int
 }
 
 struct Response: Codable {
