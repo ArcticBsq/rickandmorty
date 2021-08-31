@@ -40,8 +40,11 @@ class DetailViewController: UIViewController {
         setupSearchController()
         // 4 загрузка коллекции
         loadCollection()
-        // Кастомная иконка фильтра
-        self.navigationItem.rightBarButtonItem = UIFabric.shared().makeBarButton(self, action: #selector(openFilterDetail), imageName: "filterIcon2x", size: CGSize(width: 30, height: 30))
+        // Кастомная иконка фильтра, если выбран Characters
+        if title == "Characters" {
+            self.navigationItem.rightBarButtonItem = UIFabric.shared().makeBarButton(self, action: #selector(openFilterDetail), imageName: "filterIcon2x", size: CGSize(width: 30, height: 30))
+        }
+        // Убираем слова из кнопки назад
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
@@ -53,6 +56,7 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: Networking
+    // Метод первичной загрузки данных
     private func loadData() {
         NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title!), page: currentPage) { objects, pages in
             self.objects = objects
@@ -60,7 +64,7 @@ class DetailViewController: UIViewController {
             self.currentPage += 1
         }
     }
-    
+    // Метод последующей загрузки 20 объектов из API
     private func loadNextPage() {
         if self.totalPages! >= currentPage {
             NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title!), page: currentPage) { objects, pages in

@@ -45,7 +45,7 @@ class DetailObjectVCStack {
     let episodeRLabel = UIFabric.shared().makeLabel()
     
     func createStack(from avatar: Package) -> UIStackView {
-            let innerStack = UIFabric.shared().makeAStack(with: [])
+        let innerStack = UIFabric.shared().makeAStack(with: [], distribution: .fill, spacing: ViewMetrics.detailObjectStackSpacing)
             
              let idStack: UIStackView = {
                 idLLabel.text = "ID:"
@@ -61,9 +61,7 @@ class DetailObjectVCStack {
                 idRLabel.backgroundColor = .red
                 idRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                 
-                let stack = UIFabric.shared().makeAStack(with: [idLLabel, idRLabel])
-                stack.axis = .horizontal
-                stack.distribution = .fill
+                let stack = UIFabric.shared().makeAStack(with: [idLLabel, idRLabel], axis: .horizontal, distribution: .fill, spacing: 30)
                 stack.isHidden = true
                 
                 return stack
@@ -83,9 +81,7 @@ class DetailObjectVCStack {
                 nameRLabel.textColor = Colors.systemWhite
                 nameRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                 
-                let stack = UIFabric.shared().makeAStack(with: [nameLLabel, nameRLabel])
-                stack.axis = .horizontal
-                stack.distribution = .fill
+                let stack = UIFabric.shared().makeAStack(with: [nameLLabel, nameRLabel], axis: .horizontal, distribution: .fill)
                 
                 return stack
             }()
@@ -104,9 +100,7 @@ class DetailObjectVCStack {
                     statusRLabel.textAlignment = .left
                     statusRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                     
-                   let stack = UIFabric.shared().makeAStack(with: [statusLLabel, statusRLabel])
-                   stack.axis = .horizontal
-                    stack.distribution = .fill
+                   let stack = UIFabric.shared().makeAStack(with: [statusLLabel, statusRLabel], axis: .horizontal, distribution: .fill)
                     
                    return stack
                }()
@@ -126,9 +120,7 @@ class DetailObjectVCStack {
                     speciesRLabel.textAlignment = .left
                     speciesRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                    
-                   let stack = UIFabric.shared().makeAStack(with: [speciesLLabel, speciesRLabel])
-                   stack.axis = .horizontal
-                    stack.distribution = .fill
+                   let stack = UIFabric.shared().makeAStack(with: [speciesLLabel, speciesRLabel], axis: .horizontal, distribution: .fill)
                    
                    return stack
                }()
@@ -148,9 +140,7 @@ class DetailObjectVCStack {
                     genderRLabel.textAlignment = .left
                     genderRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                    
-                   let stack = UIFabric.shared().makeAStack(with: [genderLLabel, genderRLabel])
-                   stack.axis = .horizontal
-                    stack.distribution = .fill
+                   let stack = UIFabric.shared().makeAStack(with: [genderLLabel, genderRLabel], axis: .horizontal, distribution: .fill)
                    
                    return stack
                }()
@@ -170,9 +160,7 @@ class DetailObjectVCStack {
                     dimensionRLabel.textAlignment = .left
                     dimensionRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                    
-                    let stack = UIFabric.shared().makeAStack(with: [dimensionLLabel, dimensionRLabel])
-                    stack.axis = .horizontal
-                    stack.distribution = .fill
+                    let stack = UIFabric.shared().makeAStack(with: [dimensionLLabel, dimensionRLabel], axis: .horizontal, distribution: .fill)
                    
                    return stack
                }()
@@ -193,9 +181,7 @@ class DetailObjectVCStack {
                         typeRLabel.textAlignment = .left
                         typeRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                        
-                        let stack = UIFabric.shared().makeAStack(with: [typeLLabel, typeRLabel])
-                        stack.axis = .horizontal
-                        stack.distribution = .fill
+                        let stack = UIFabric.shared().makeAStack(with: [typeLLabel, typeRLabel], axis: .horizontal, distribution: .fill)
                        
                        return stack
                    }()
@@ -217,9 +203,7 @@ class DetailObjectVCStack {
                     airDateRLabel.textAlignment = .left
                     airDateRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
                    
-                    let stack = UIFabric.shared().makeAStack(with: [airDateLLabel, airDateRLabel])
-                    stack.axis = .horizontal
-                    stack.distribution = .fill
+                    let stack = UIFabric.shared().makeAStack(with: [airDateLLabel, airDateRLabel], axis: .horizontal, distribution: .fill)
                    
                    return stack
                }()
@@ -229,9 +213,8 @@ class DetailObjectVCStack {
         innerStack.spacing = ViewMetrics.detailObjectStackSpacing
         innerStack.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
-        let outerStack = UIFabric.shared().makeAStack(with: [pictureView, innerStack])
+        let outerStack = UIFabric.shared().makeAStack(with: [pictureView, innerStack], distribution: .fill)
         outerStack.spacing = ViewMetrics.detailObjectStackSpacing
-        outerStack.distribution = .fill
             
         return outerStack
     }

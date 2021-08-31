@@ -12,29 +12,6 @@ class NetManager {
         return NetManager()
     }
     
-//    func fetchData(url: String, completion: @escaping ([Package], String) -> Void) {
-//        DispatchQueue.global().async {
-//            guard let url = URL(string: url) else { return }
-//            
-//            let task = URLSession.shared.dataTask(with: url) { data, resp, error in
-//                guard let data = data else {
-//                    print("data was nil")
-//                    return
-//                }
-//                
-//                guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
-//                    print("Couldn't decode JSON")
-//                    return
-//                }
-//                
-//                let result = list.results
-//                let nextPage = list.info.next ?? ""
-//                completion(result, nextPage)
-//            }
-//            task.resume()
-//        }
-//    }
-    
     func fetchDataPage(url: String, page: Int, completion: @escaping ([Package], Int) -> ()) {
         let finalURL = url + String(page)
         

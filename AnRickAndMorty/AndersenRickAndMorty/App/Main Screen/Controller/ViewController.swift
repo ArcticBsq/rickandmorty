@@ -24,12 +24,12 @@ class MainViewController: UIViewController {
         let locView = MainButtonView.shared().createButton(title: "Locations", image: "locationsPic", selector: #selector(openDetail))
         let epiView = MainButtonView.shared().createButton(title: "Episodes", image: "episodesPic", selector: #selector(openDetail))
         // Делаем stackView из кнопочек
-        let buttonsStackView = UIFabric.shared().makeAStack(with: [charView, locView, epiView])
+        let buttonsStackView = UIFabric.shared().makeAStack(with: [charView, locView, epiView], distribution: .fillEqually)
         
         view.addSubview(buttonsStackView)
         NSLayoutConstraint.activate([
             buttonsStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            buttonsStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            buttonsStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             buttonsStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             buttonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50)
         ])
