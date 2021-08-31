@@ -7,6 +7,7 @@
 
 import UIKit
 
+// В этом классе собрано все для создания UI элементов. Можно было бы в extension, но хотелось попрактиковать singleton
 class UIFabric {
     // Синглтон, почему бы и нет
     static func shared() -> UIFabric {
@@ -24,11 +25,15 @@ class UIFabric {
         return view
     }
     
-    func makeButton() -> UIButton {
+    func makeButton(backColor: UIColor? = nil, text: String, textColor: UIColor?, textActiveColor: UIColor? = Colors.systemGreen) -> UIButton {
         let button = UIButton()
         button.layer.cornerRadius = ViewMetrics.corner
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = backColor
+        button.setTitle(text, for: .normal)
+        button.setTitleColor(textColor, for: .normal)
+        button.setTitleColor(textActiveColor, for: .selected)
         return button
     }
     
@@ -40,20 +45,22 @@ class UIFabric {
         return imgv
     }
     
-    func makeLabel() -> UILabel {
+    func makeLabel(text: String? = nil, textColor: UIColor = Colors.systemBlack, fontSize: CGFloat = 28, textAlignment: NSTextAlignment = .center) -> UILabel {
         let label = UILabel()
-        label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 28)
-        label.textAlignment = .center
+        label.textColor = textColor
+        label.font = UIFont.systemFont(ofSize: fontSize)
+        label.textAlignment = textAlignment
+        label.text = text
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
     
-    func makeAStack(with views: [UIView]) -> UIStackView {
+    func makeAStack(with views: [UIView], axis: NSLayoutConstraint.Axis = .vertical, distribution: UIStackView.Distribution, alignment: UIStackView.Alignment = .fill, spacing: CGFloat = 30) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: views)
-        stackView.axis = .vertical
-        stackView.spacing = 30
-        stackView.distribution = .fillEqually
+        stackView.axis = axis
+        stackView.spacing = spacing
+        stackView.distribution = distribution
+        stackView.alignment = alignment
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }

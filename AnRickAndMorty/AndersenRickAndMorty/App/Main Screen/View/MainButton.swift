@@ -21,10 +21,9 @@ class MainButtonView {
         let view = UIFabric.shared().makeView()
             
         // 2 создаем средний слой uibutton
-        let button = UIFabric.shared().makeButton()
+        let button = UIFabric.shared().makeButton(backColor: nil, text: title, textColor: nil)
             button.setImage(UIImage(named: image), for: .normal)
             button.addTarget(self, action: selector, for: .touchUpInside)
-            button.setTitle(title, for: .normal)
             
         // 3 создаем верхний слой uimageview
         let imageview = UIFabric.shared().makeImageView()

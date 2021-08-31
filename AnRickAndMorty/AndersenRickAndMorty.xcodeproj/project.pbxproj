@@ -20,7 +20,9 @@
 		F69A7B5C26C25DC200A7FBA4 /* Object.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69A7B5B26C25DC200A7FBA4 /* Object.swift */; };
 		F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F69A7B6226C2747800A7FBA4 /* CustomCell.swift */; };
 		F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6CD4FA226C11E5000805C39 /* DetailViewController.swift */; };
-		F6D96B7F26D7CA210029C6CA /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D96B7E26D7CA210029C6CA /* FilterViewController.swift */; };
+		F6D1C30926DE051800046E0A /* ContainerFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C30826DE051800046E0A /* ContainerFilterView.swift */; };
+		F6D1C31126DE3DFC00046E0A /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */; };
+		F6D1C31726DE4A7E00046E0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C31626DE4A7E00046E0A /* DataManager.swift */; };
 		F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7BA6626CCF41700F04FD5 /* NetManager.swift */; };
 		F6EB390626D79817000FC816 /* DetailObjectVCStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EB390526D79817000FC816 /* DetailObjectVCStack.swift */; };
 /* End PBXBuildFile section */
@@ -41,7 +43,9 @@
 		F69A7B5B26C25DC200A7FBA4 /* Object.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Object.swift; sourceTree = "<group>"; };
 		F69A7B6226C2747800A7FBA4 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		F6CD4FA226C11E5000805C39 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		F6D96B7E26D7CA210029C6CA /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		F6D1C30826DE051800046E0A /* ContainerFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerFilterView.swift; sourceTree = "<group>"; };
+		F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
+		F6D1C31626DE4A7E00046E0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		F6E7BA6626CCF41700F04FD5 /* NetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetManager.swift; sourceTree = "<group>"; };
 		F6EB390526D79817000FC816 /* DetailObjectVCStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailObjectVCStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,6 +64,7 @@
 		F608F27526CBDA4500BFCCF7 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				F6D1C31526DE4A6800046E0A /* Data Storage Service */,
 				F6EB390126D77F99000FC816 /* Networking Service */,
 				F639930626CD164E00A3ABB3 /* Global Model */,
 				F639930526CD163000A3ABB3 /* Global View */,
@@ -143,7 +148,7 @@
 		F639930226CD15A600A3ABB3 /* Detail Object Screen */ = {
 			isa = PBXGroup;
 			children = (
-				F639930326CD15EB00A3ABB3 /* DetailObjectController.swift */,
+				F6D1C31826DE680400046E0A /* Controller */,
 				F6EB390326D797D1000FC816 /* View */,
 			);
 			path = "Detail Object Screen";
@@ -201,9 +206,34 @@
 			path = AndersenRickAndMorty;
 			sourceTree = "<group>";
 		};
+		F6D1C30726DE04A900046E0A /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F6D1C30826DE051800046E0A /* ContainerFilterView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		F6D1C31526DE4A6800046E0A /* Data Storage Service */ = {
+			isa = PBXGroup;
+			children = (
+				F6D1C31626DE4A7E00046E0A /* DataManager.swift */,
+			);
+			path = "Data Storage Service";
+			sourceTree = "<group>";
+		};
+		F6D1C31826DE680400046E0A /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				F639930326CD15EB00A3ABB3 /* DetailObjectController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		F6D96B7C26D7C9F60029C6CA /* Filter Screen */ = {
 			isa = PBXGroup;
 			children = (
+				F6D1C30726DE04A900046E0A /* View */,
 				F6D96B7D26D7CA0C0029C6CA /* Controller */,
 			);
 			path = "Filter Screen";
@@ -212,7 +242,7 @@
 		F6D96B7D26D7CA0C0029C6CA /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				F6D96B7E26D7CA210029C6CA /* FilterViewController.swift */,
+				F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -320,13 +350,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				F69A7B5C26C25DC200A7FBA4 /* Object.swift in Sources */,
+				F6D1C31726DE4A7E00046E0A /* DataManager.swift in Sources */,
 				F68FA7E926BA7F1500F8E379 /* ViewController.swift in Sources */,
+				F6D1C30926DE051800046E0A /* ContainerFilterView.swift in Sources */,
 				F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */,
 				F68FA7E526BA7F1500F8E379 /* AppDelegate.swift in Sources */,
 				F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */,
 				F639930926CD1ADE00A3ABB3 /* MainButton.swift in Sources */,
 				F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */,
-				F6D96B7F26D7CA210029C6CA /* FilterViewController.swift in Sources */,
+				F6D1C31126DE3DFC00046E0A /* FilterViewController.swift in Sources */,
 				F639930426CD15EB00A3ABB3 /* DetailObjectController.swift in Sources */,
 				F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */,
 				F608F28426CBE76A00BFCCF7 /* UIFabric.swift in Sources */,
