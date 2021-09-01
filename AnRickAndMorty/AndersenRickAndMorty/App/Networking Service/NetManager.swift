@@ -34,6 +34,28 @@ class NetManager {
         task.resume()
     }
     
+    func fetchFilterDataPage(url: String, completion: @escaping ([Package], Int, String?) -> ()) {
+    
+        guard let url = URL(string: url) else { return }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, resp, error in
+            guard let data = data else {
+                print("data was nil")
+                return
+            }
+            
+            guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
+                print("Couldn't decode JSON")
+                return
+            }
+            let result = list.results
+            let allPages = list.info.pages
+            let nextPage = list.info.next
+            completion(result, allPages, nextPage ?? nil)
+        }
+        task.resume()
+    }
+    
     //MARK: DetailViewController
     func getUrl(from title: String) -> String {
         switch title {

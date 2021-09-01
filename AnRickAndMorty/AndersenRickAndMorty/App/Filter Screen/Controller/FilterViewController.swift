@@ -8,6 +8,9 @@
 import UIKit
 
 class FilterViewController: UIViewController {
+    
+    var statusUrlPart: String?
+    var genderUrlPart: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -17,6 +20,23 @@ class FilterViewController: UIViewController {
         setupContainerView()
         setupActions()
     }
+    
+    
+//    private func setupFilterUrl() -> String {
+//        var resultUrl = APIconstants.charactersFilter
+//        
+//        if statusUrlPart == genderUrlPart{
+//            resultUrl = APIconstants.characters
+//        } else if statusUrlPart == nil && genderUrlPart != nil {
+//            resultUrl += "?\(genderUrlPart!)"
+//        } else if statusUrlPart != nil && genderUrlPart == nil {
+//            resultUrl += "?\(statusUrlPart!)"
+//        } else {
+//            resultUrl += "?\(statusUrlPart!)&\(genderUrlPart!)"
+//        }
+//        
+//        return resultUrl
+//    }
     // Инициализируем стеквью, в котором весь UI
     private let container = ContainerFilterView.shared().createContainerStack()
     
@@ -37,7 +57,7 @@ class FilterViewController: UIViewController {
         // При обновлении массива, если элементов 0, то удаляет значение из defaults, логика reset
         didSet {
             if statusButtons.isEmpty {
-                DataManager.shared().deleteFromDefaults(from: "statusParam")
+                self.statusUrlPart = nil
             } else {
                 // Здесь происходит инициализация кнопки reset
                 let resetStatusButton = self.view.viewWithTag(121) as? UIButton
@@ -49,7 +69,7 @@ class FilterViewController: UIViewController {
     private var selectedGender = [UIButton]() {
         didSet {
             if genderButtons.isEmpty {
-                DataManager.shared().deleteFromDefaults(from: "genderParam")
+                self.genderUrlPart = nil
             } else {
                 // Здесь происходит инициализация кнопки reset
                 let resetGenderButton = self.view.viewWithTag(122) as? UIButton
@@ -88,35 +108,37 @@ class FilterViewController: UIViewController {
         unknownGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
     }
 
-    //MARK: По идее в модель вынести, но проблема в доступе Model к View
+    //MARK: Вопрос
+    // Вынести в модель, но конфликт Model видит View
     @objc func setParameters(_ sender: UIButton) {
-        print("tap")
+        let title = sender.currentTitle!.suffix(sender.currentTitle!.count - 6).lowercased()
+        
         switch sender.tag {
         // Все случаи для STATUS параметров
         case 101, 102, 103:
             if selectedStatus.isEmpty {
                 selectedStatus.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(sender.currentTitle!, for: "statusParam")
+                self.statusUrlPart = "status=\(title)"
             } else {
                 selectedStatus.first?.titleLabel?.textColor = Colors.systemWhite
                 selectedStatus.removeAll()
                 selectedStatus.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(sender.currentTitle!, for: "statusParam")
+                self.statusUrlPart = "status=\(title)"
             }
         // Все случаи для GENDER параметров
         case 111, 112, 113, 114:
             if selectedGender.isEmpty {
                 selectedGender.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(sender.currentTitle!, for: "genderParam")
+                self.genderUrlPart = "gender=\(title)"
             } else {
                 selectedGender.first?.titleLabel?.textColor = Colors.systemWhite
                 selectedGender.removeAll()
                 selectedGender.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(sender.currentTitle!, for: "genderParam")
+                self.genderUrlPart = "gender=\(title)"
             }
         // RESET STATUS
         case 121:

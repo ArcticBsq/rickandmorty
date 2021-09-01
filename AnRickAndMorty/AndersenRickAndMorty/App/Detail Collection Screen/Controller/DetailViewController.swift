@@ -12,22 +12,9 @@ class DetailViewController: UIViewController {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
-            }
-            
-        }
-    }
+            }}}
     
-    private var currentPage = 1
-    private var totalPages: Int?
     
-    // Переменная отображающая статус загрузки новых элементов из API
-    var isLoading = false {
-        didSet {
-            print(isLoading)
-        }
-    }
-    // Переменная в которой хранится следующая страница загрузки из API
-    private var nextPageToLoad: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,24 +43,49 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: Networking
-    // Метод первичной загрузки данных
+    // Номер текущей страницы данных API
+    private var currentPage = 1
+    // Всего страниц по запросу API
+    private var totalPages: Int?
+    // Переменная отображающая статус загрузки новых элементов из API
+    var isLoading = false
+    // Переменная в которой хранится следующая страница загрузки из API
+    private var nextPageToLoad: String?
+    // Метод загрузки API при первом запуске экрана
     private func loadData() {
-        NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title!), page: currentPage) { objects, pages in
-            self.objects = objects
-            self.totalPages = pages
-            self.currentPage += 1
-        }
-    }
+        guard let title = title else { return }
+        DispatchQueue.global().async {
+            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title), page: self.currentPage) { objects, pages in
+                self.objects = objects
+                self.totalPages = pages
+                self.currentPage += 1
+                self.filteredObjects = [Package]()
+    }}}
     // Метод последующей загрузки 20 объектов из API
     private func loadNextPage() {
-        if self.totalPages! >= currentPage {
-            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title!), page: currentPage) { objects, pages in
-                self.objects += objects
-                self.collectionView.reloadData()
-                self.isLoading = false
-            }
-        }
-    }
+        guard let title = title else { return }
+        DispatchQueue.global().async {
+            if self.totalPages! >= self.currentPage {
+                NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title), page: self.currentPage) { [weak self] objects, pages in
+                    guard let strongSelf = self else { return }
+                    strongSelf.isLoading = false
+                    
+                    strongSelf.objects += objects
+                    strongSelf.currentPage += 1
+    }}}}
+    // Метод последующей загрузки 20 объектов из API с фильтром по имени
+    private func loadNextFilteredPage() {
+        DispatchQueue.global().async {
+            if self.totalPages! >= self.currentPage {
+                if let url = self.nextPageToLoad {
+                    NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, pages, nextPage  in
+                        guard let strongSelf = self else { return }
+                        strongSelf.isLoading = false
+                        
+                        strongSelf.filteredObjects += objects
+                        strongSelf.currentPage += 1
+                        strongSelf.nextPageToLoad = nextPage
+    }}}}}
     
     //MARK: UI
     // создание collection view
@@ -105,7 +117,11 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: Search Controller
-    private var filteredObjects = [Package]()
+    private var filteredObjects = [Package]() {
+        didSet {
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+    }}}
     // Для отслеживания изменений в тексте searc bar
     private var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
@@ -118,18 +134,18 @@ class DetailViewController: UIViewController {
     private func filterContentForSearchText(_ searchText: String) {
       filteredObjects = objects.filter { (object: Package) -> Bool in
         return object.name.lowercased().contains(searchText.lowercased())
-      }
+    }
       
       collectionView.reloadData()
         //MARK: Bug
         // дважды перезагружает, когда нажимается Cancel
         print("Reloaded")
     }
-
+    
     private let searchController = UISearchController(searchResultsController: nil)
     private func setupSearchController() {
         // Информирует о любых изменениях текста
-        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
         // Не скрывать контроллер, где будут отображены результаты
         searchController.obscuresBackgroundDuringPresentation = false
         // Что будет в placeholder
@@ -138,26 +154,45 @@ class DetailViewController: UIViewController {
         navigationItem.searchController = searchController
         // При переходе на другой контроллер search скроется
         definesPresentationContext = true
+        searchController.hidesNavigationBarDuringPresentation = false
     }
-}
-
-
-
-
-
-
-
-
+    
+    private var timer: Timer?
+    
+    private func searchName() {
+        let url = APIconstants.charactersFilterName + (searchController.searchBar.text  ?? "")
+        NetManager.shared().fetchFilterDataPage(url: url) { objects, pages, nextPage  in
+            if self.filteredObjects.isEmpty {
+                self.filteredObjects += objects
+            } else {
+                self.filteredObjects = objects
+            }
+            
+            self.totalPages = pages
+            if self.currentPage == 1 {
+                self.currentPage += 1
+            } else {
+                self.currentPage = 2
+            }
+            self.nextPageToLoad = nextPage
+    }}}
 
 
 //MARK: Extensions
-extension DetailViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        filterContentForSearchText(searchBar.text!)
-        print("updateSearchResults")
-    }
-}
+extension DetailViewController: UISearchBarDelegate {
+    // Осуществляется запрос API по имени, введенном в searchBar после завершения ввода
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        // Если searchBar не пуст, то идет загрузка фильтрованного метода
+        if searchBar.text != nil {
+            timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+                self.searchName()
+            })
+            // Если searchBar опустел, то перезагружается таблица с первичными данными
+        } else {
+            timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in
+                self.loadData()
+            })
+    }}}
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -197,13 +232,12 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         default:
             print("error")
         }
-                
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let object: Package
-        
+        // В зависимости от того, фильтруется что-то в searchBar или нет, выбирается объект для передачи в DetailObjectScreen
         if isFiltering {
             object = filteredObjects[indexPath.row]
         } else {
@@ -216,18 +250,13 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
         vc.image = cell.backG.image
     }
     
+    // Когда скролл упирается снизу, вызывается этот метод для загрузки следующей страницы данных из API
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if !self.isLoading && (collectionView.contentOffset.y >= (collectionView.contentSize.height - collectionView.frame.size.height)) {
-                self.isLoading = true
-
-            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: self.title!), page: self.currentPage) { [weak self] objects, pages in
-                guard let strongSelf = self else { return }
-                strongSelf.isLoading = false
-                
-                strongSelf.objects += objects
-                strongSelf.currentPage += 1
-            }
-        }
-    }
-    
-}
+            self.isLoading = true
+            // В зависимости от того, фильтруется что-то в searchBar или нет вызываются разные методы для загрузки
+            if !isFiltering {
+                self.loadNextPage()
+            } else {
+                self.loadNextFilteredPage()
+    }}}}
