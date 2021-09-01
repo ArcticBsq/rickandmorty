@@ -21,8 +21,17 @@ class DataManager {
         defaults.setValue(word, forKey: key)
     }
     
-    func loadFromDefaults(from key: String) -> String? {
+    func attachBoolToDefaults(_ status: Bool, for key: String) {
+        defaults.setValue(status, forKey: key)
+    }
+    
+    func loadStringFromDefaults(from key: String) -> String? {
         let result = defaults.string(forKey: key)
+        return result
+    }
+    
+    func loadBoolFromDefaults(from key: String) -> Bool? {
+        let result = defaults.bool(forKey: key)
         return result
     }
     

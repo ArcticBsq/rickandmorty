@@ -19,18 +19,18 @@ class ContainerFilterView {
     let statusLLabel = UIFabric.shared().makeLabel(text: "Status", textColor: Colors.systemGreen, fontSize: 18, textAlignment: .left)
     let statusRButton = UIFabric.shared().makeButton(text: "Reset", textColor: Colors.systemRedActiv, textActiveColor: Colors.systemRedActiv)
     // Типы фильтров
-    let aliveButton = UIFabric.shared().makeButton(text: "⬤   Alive", textColor: Colors.systemWhite)
-    let deadButton = UIFabric.shared().makeButton(text: "⬤   Dead", textColor: Colors.systemWhite)
-    let unknownButton = UIFabric.shared().makeButton(text: "⬤   Unknown", textColor: Colors.systemWhite)
-
+    let aliveButton = UIFabric.shared().makeButton(text: "●     Alive", textColor: Colors.systemWhite)
+    let deadButton = UIFabric.shared().makeButton(text: "●     Dead", textColor: Colors.systemWhite)
+    let unknownButton = UIFabric.shared().makeButton(text: "●     Unknown", textColor: Colors.systemWhite)
+    
     // Элементы относящиеся к Gender фильтру
     let genderLLabel = UIFabric.shared().makeLabel(text: "Gender", textColor: Colors.systemGreen, fontSize: 18, textAlignment: .left)
     let genderRButton = UIFabric.shared().makeButton(text: "Reset", textColor: Colors.systemRedActiv, textActiveColor: Colors.systemRedActiv)
     // Типы фильтров
-    let femaleButton = UIFabric.shared().makeButton(text: "⬤   Female", textColor: Colors.systemWhite)
-    let maleButton = UIFabric.shared().makeButton(text: "⬤   Male", textColor: Colors.systemWhite)
-    let genderlessButton = UIFabric.shared().makeButton(text: "⬤   Genderless", textColor: Colors.systemWhite)
-    let unknownGenderButton = UIFabric.shared().makeButton(backColor: nil, text: "⬤   Unknown", textColor: Colors.systemWhite)
+    let femaleButton = UIFabric.shared().makeButton(text: "●     Female", textColor: Colors.systemWhite)
+    let maleButton = UIFabric.shared().makeButton(text: "●     Male", textColor: Colors.systemWhite)
+    let genderlessButton = UIFabric.shared().makeButton(text: "●     Genderless", textColor: Colors.systemWhite)
+    let unknownGenderButton = UIFabric.shared().makeButton(backColor: nil, text: "●     Unknown", textColor: Colors.systemWhite)
     
     // Основной контейнер, в котором лежат все элементы
     func createContainerStack() -> UIStackView {
