@@ -53,16 +53,16 @@ class DetailViewController: UIViewController {
     private func loadData() {
         guard let title = title else { return }
         DispatchQueue.global().async {
-            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title), page: self.currentPage) { objects in
-                self.objects = objects
-                self.currentPage += 1
-                self.filteredObjects = [Package]()
+            NetManager.shared().fetchFilterDataPage(url: NetManager.shared().getUrl(from: title)) { objects, nextPage, totalObjects in
+                self.objects = objects!
+                self.nextPageToLoad = nextPage
+                self.totalObjectsCount = totalObjects
     }}}
     // Метод загрузки API при осуществлении поиска по имени в SearchBar
     private func searchName() {
         // Создаем URL из метода NetManager + текст из searchBar
         let url = NetManager.shared().getUrl(from: title!, isFiltering: true) + (searchController.searchBar.text  ?? "")
-        NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage  in
+        NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects  in
             guard let objects = objects else {
                 self.filteredObjects.removeAll()
                 return
@@ -73,36 +73,32 @@ class DetailViewController: UIViewController {
                 self.filteredObjects = objects
             }
             
-            if self.currentPage == 1 {
-                self.currentPage += 1
-            } else {
-                self.currentPage = 2
-            }
             self.nextPageToLoad = nextPage
+            self.totalObjectsCount = totalObjects
     }}
     // Метод последующей загрузки 20 объектов из API
     private func loadNextPage() {
-        print("Load next page")
-        guard let title = title else { return }
         DispatchQueue.global().async {
-            NetManager.shared().fetchDataPage(url: NetManager.shared().getUrl(from: title), page: self.currentPage) { [weak self] objects in
-                guard let strongSelf = self else { return }
-                strongSelf.isLoading = false
-                
-                strongSelf.objects += objects
-                strongSelf.currentPage += 1
-    }}}
+            if let url = self.nextPageToLoad {
+                NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
+                    guard let strongSelf = self else { return }
+                    strongSelf.isLoading = false
+                    guard let objects = objects else { return }
+                    strongSelf.objects += objects
+                    strongSelf.nextPageToLoad = nextPage
+                    strongSelf.totalObjectsCount = totalObjects
+    }}}}
     // Метод последующей загрузки 20 объектов из API с фильтром по имени
     private func loadNextFilteredPage() {
         DispatchQueue.global().async {
             if let url = self.nextPageToLoad {
-                NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage  in
+                NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
                     guard let strongSelf = self else { return }
                     strongSelf.isLoading = false
                     guard let objects = objects else { return }
                     strongSelf.filteredObjects += objects
-                    strongSelf.currentPage += 1
                     strongSelf.nextPageToLoad = nextPage
+                    strongSelf.totalObjectsCount = totalObjects
     }}}}
     
     //MARK: UI
@@ -187,7 +183,12 @@ extension DetailViewController: UISearchBarDelegate {
     // Осуществляется запрос API по имени, введенном в searchBar после завершения ввода
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         //MARK: Баг, нужно сравнить количество в массиве с количеством всего элементов
-        self.isLoading = false
+        if filteredObjects.count == totalObjectsCount {
+            self.isLoading = false
+        } else {
+            self.isLoading = true
+        }
+        
         // Если searchBar не пуст, то идет загрузка фильтрованного метода
         if searchBar.text != nil {
             timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { _ in

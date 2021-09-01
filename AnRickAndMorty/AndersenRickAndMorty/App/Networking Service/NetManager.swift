@@ -12,28 +12,7 @@ class NetManager {
         return NetManager()
     }
     
-    func fetchDataPage(url: String, page: Int, completion: @escaping ([Package]) -> ()) {
-        let finalURL = url + String(page)
-        
-        guard let url = URL(string: finalURL) else { return }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, resp, error in
-            guard let data = data else {
-                print("data was nil")
-                return
-            }
-            
-            guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
-                print("Couldn't decode JSON")
-                return
-            }
-            let result = list.results
-            completion(result)
-        }
-        task.resume()
-    }
-    
-    func fetchFilterDataPage(url: String, completion: @escaping ([Package]?, String?) -> ()) {
+    func fetchFilterDataPage(url: String, completion: @escaping ([Package]?, String?, Int?) -> ()) {
     
         guard let url = URL(string: url) else { return }
         
@@ -47,13 +26,15 @@ class NetManager {
                 print("Couldn't decode JSON")
                 let result = [Package]()
                 let nextPage: String? = nil
-                completion(result, nextPage)
+                let totalObjects: Int? = nil
+                completion(result, nextPage, totalObjects)
                 return
             }
             
             let result = list.results
             let nextPage = list.info.next
-            completion(result, nextPage ?? nil)
+            let totalObjects = list.info.count
+            completion(result, nextPage, totalObjects)
         }
         task.resume()
     }
