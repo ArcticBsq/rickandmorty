@@ -12,7 +12,7 @@ class NetManager {
         return NetManager()
     }
     
-    func fetchDataPage(url: String, page: Int, completion: @escaping ([Package], Int) -> ()) {
+    func fetchDataPage(url: String, page: Int, completion: @escaping ([Package]) -> ()) {
         let finalURL = url + String(page)
         
         guard let url = URL(string: finalURL) else { return }
@@ -28,13 +28,12 @@ class NetManager {
                 return
             }
             let result = list.results
-            let allPages = list.info.pages
-            completion(result, allPages)
+            completion(result)
         }
         task.resume()
     }
     
-    func fetchFilterDataPage(url: String, completion: @escaping ([Package], Int, String?) -> ()) {
+    func fetchFilterDataPage(url: String, completion: @escaping ([Package]?, String?) -> ()) {
     
         guard let url = URL(string: url) else { return }
         
@@ -46,28 +45,45 @@ class NetManager {
             
             guard let list = try? JSONDecoder().decode(Response.self, from: data) else {
                 print("Couldn't decode JSON")
+                let result = [Package]()
+                let nextPage: String? = nil
+                completion(result, nextPage)
                 return
             }
+            
             let result = list.results
-            let allPages = list.info.pages
             let nextPage = list.info.next
-            completion(result, allPages, nextPage ?? nil)
+            completion(result, nextPage ?? nil)
         }
         task.resume()
     }
     
     //MARK: DetailViewController
-    func getUrl(from title: String) -> String {
-        switch title {
-        case "Characters":
-            return APIconstants.characters
-        case "Locations":
-            return APIconstants.locations
-        case "Episodes":
-            return APIconstants.episodes
-        default:
-            print("Incorrect word in switch statement in DetailVC")
-            break
+    func getUrl(from title: String, isFiltering: Bool = false) -> String {
+        if isFiltering {
+            switch title {
+            case "Characters":
+                return APIconstants.charactersFilterName
+            case "Locations":
+                return APIconstants.locationsFilterName
+            case "Episodes":
+                return APIconstants.episodesFilterName
+            default:
+                print("Incorrect word in switch statement in DetailVC")
+                break
+            }
+        } else {
+            switch title {
+            case "Characters":
+                return APIconstants.characters
+            case "Locations":
+                return APIconstants.locations
+            case "Episodes":
+                return APIconstants.episodes
+            default:
+                print("Incorrect word in switch statement in DetailVC")
+                break
+            }
         }
         return ""
     }
