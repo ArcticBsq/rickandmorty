@@ -83,6 +83,7 @@ class DetailViewController: UIViewController {
                 NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
                     guard let strongSelf = self else { return }
                     strongSelf.isLoading = false
+                    print("Is loading: false - nextPage")
                     guard let objects = objects else { return }
                     strongSelf.objects += objects
                     strongSelf.nextPageToLoad = nextPage
@@ -95,6 +96,7 @@ class DetailViewController: UIViewController {
                 NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
                     guard let strongSelf = self else { return }
                     strongSelf.isLoading = false
+                    print("Is loading: false - nextPage")
                     guard let objects = objects else { return }
                     strongSelf.filteredObjects += objects
                     strongSelf.nextPageToLoad = nextPage
@@ -184,9 +186,11 @@ extension DetailViewController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         //MARK: Баг, нужно сравнить количество в массиве с количеством всего элементов
         if filteredObjects.count == totalObjectsCount {
-            self.isLoading = false
-        } else {
             self.isLoading = true
+            print("Is loading: true - searchBar")
+        } else {
+            self.isLoading = false
+            print("Is loading: false - searchBar")
         }
         
         // Если searchBar не пуст, то идет загрузка фильтрованного метода
@@ -200,7 +204,13 @@ extension DetailViewController: UISearchBarDelegate {
                 self.filteredObjects.removeAll()
                 self.loadData()
         })
-    }}}
+    }}
+    func stepThrough() {
+        for i in 1...objects.count - 1{
+            print(objects[i])
+        }
+    }
+}
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -260,17 +270,23 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     
     // Когда скролл упирается снизу, вызывается этот метод для загрузки следующей страницы данных из API
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        counter += 1
-        print(counter)
-        print("Is loading: \(self.isLoading)")
         if !self.isLoading && (collectionView.contentOffset.y >= (collectionView.contentSize.height - collectionView.frame.size.height)) {
-            print("Is loading false")
             self.isLoading = true
+            
+            print("Is loading: true - scroll")
             // В зависимости от того, фильтруется что-то в searchBar или нет вызываются разные методы для загрузки
             if !isFiltering {
-                print("!isFiltering")
-                self.loadNextPage()
+                if objects.count == totalObjectsCount {
+                    isLoading = false
+                } else {
+                    self.loadNextPage()
+                }
             } else {
+                if filteredObjects.count == totalObjectsCount {
+                    isLoading = false
+                } else {
+                    self.loadNextFilteredPage()
+                }
                 print("isFiltering")
-                self.loadNextFilteredPage()
+                
     }}}}
