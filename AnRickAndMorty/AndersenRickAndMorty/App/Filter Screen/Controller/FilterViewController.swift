@@ -21,22 +21,6 @@ class FilterViewController: UIViewController {
         setupActions()
     }
     
-    
-//    private func setupFilterUrl() -> String {
-//        var resultUrl = APIconstants.charactersFilter
-//        
-//        if statusUrlPart == genderUrlPart{
-//            resultUrl = APIconstants.characters
-//        } else if statusUrlPart == nil && genderUrlPart != nil {
-//            resultUrl += "?\(genderUrlPart!)"
-//        } else if statusUrlPart != nil && genderUrlPart == nil {
-//            resultUrl += "?\(statusUrlPart!)"
-//        } else {
-//            resultUrl += "?\(statusUrlPart!)&\(genderUrlPart!)"
-//        }
-//        
-//        return resultUrl
-//    }
     // Инициализируем стеквью, в котором весь UI
     private let container = ContainerFilterView.shared().createContainerStack()
     
@@ -54,28 +38,22 @@ class FilterViewController: UIViewController {
     // По нему будет проходить логика для изменения цвета кнопок и deselect лишних
     private var statusButtons = [UIButton]()
     private var selectedStatus = [UIButton]() {
-        // При обновлении массива, если элементов 0, то удаляет значение из defaults, логика reset
+        // Kогика reset
         didSet {
-            if statusButtons.isEmpty {
-                self.statusUrlPart = nil
-            } else {
-                // Здесь происходит инициализация кнопки reset
-                let resetStatusButton = self.view.viewWithTag(121) as? UIButton
-                resetStatusButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
-                resetStatusButton?.isHidden = false
-            }}}
+        // Здесь происходит инициализация кнопки reset
+            let resetStatusButton = self.view.viewWithTag(121) as? UIButton
+            resetStatusButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
+            resetStatusButton?.isHidden = false
+    }}
     // По аналогии, только gender
     private var genderButtons = [UIButton]()
     private var selectedGender = [UIButton]() {
         didSet {
-            if genderButtons.isEmpty {
-                self.genderUrlPart = nil
-            } else {
-                // Здесь происходит инициализация кнопки reset
-                let resetGenderButton = self.view.viewWithTag(122) as? UIButton
-                resetGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
-                resetGenderButton?.isHidden = false
-            }}}
+        // Здесь происходит инициализация кнопки reset
+            let resetGenderButton = self.view.viewWithTag(122) as? UIButton
+            resetGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
+            resetGenderButton?.isHidden = false
+    }}
     
     // Заполняем массивы statusButtons/genderButtons по view.tag
     private func setupActions() {
@@ -106,12 +84,50 @@ class FilterViewController: UIViewController {
         let unknownGenderButton = self.view.viewWithTag(114) as? UIButton
         genderButtons.append(unknownGenderButton!)
         unknownGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
+        
+        if let status = DataManager.shared().loadStringFromDefaults(from: "status") {
+            switch status {
+            case "alive":
+                selectedStatus.append(aliveButton!)
+                aliveButton?.shortChange(Colors.systemGreen)
+            case "dead":
+                selectedStatus.append(deadButton!)
+                deadButton?.shortChange(Colors.systemGreen)
+            case "unknown":
+                selectedStatus.append(unknownButton!)
+                unknownButton?.shortChange(Colors.systemGreen)
+            default:
+                break
+            }
+        }
+        
+        if let gender = DataManager.shared().loadStringFromDefaults(from: "gender") {
+            switch gender {
+            case "female":
+                selectedGender.append(femaleButton!)
+                femaleButton?.shortChange(Colors.systemGreen)
+            case "male":
+                selectedGender.append(maleButton!)
+                maleButton?.shortChange(Colors.systemGreen)
+            case "genderless":
+                selectedGender.append(genderLess!)
+                genderLess?.shortChange(Colors.systemGreen)
+            case "unknown":
+                selectedGender.append(unknownGenderButton!)
+                unknownGenderButton?.shortChange(Colors.systemGreen)
+            default:
+                break
+            }
+        }
     }
 
     //MARK: Вопрос
     // Вынести в модель, но конфликт Model видит View
     @objc func setParameters(_ sender: UIButton) {
-        let title = sender.currentTitle!.suffix(sender.currentTitle!.count - 6).lowercased()
+        var title: String = ""
+        if sender.currentTitle?.lowercased() != "reset" {
+            title = sender.currentTitle!.suffix(sender.currentTitle!.count - 6).lowercased()
+        }
         
         switch sender.tag {
         // Все случаи для STATUS параметров
@@ -119,47 +135,46 @@ class FilterViewController: UIViewController {
             if selectedStatus.isEmpty {
                 selectedStatus.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                self.statusUrlPart = "status=\(title)"
+                DataManager.shared().saveToDefaults(title, for: "status")
             } else {
                 selectedStatus.first?.titleLabel?.textColor = Colors.systemWhite
                 selectedStatus.removeAll()
                 selectedStatus.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                self.statusUrlPart = "status=\(title)"
+                DataManager.shared().saveToDefaults(title, for: "status")
             }
         // Все случаи для GENDER параметров
         case 111, 112, 113, 114:
             if selectedGender.isEmpty {
                 selectedGender.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                self.genderUrlPart = "gender=\(title)"
+                DataManager.shared().saveToDefaults(title, for: "gender")
             } else {
                 selectedGender.first?.titleLabel?.textColor = Colors.systemWhite
                 selectedGender.removeAll()
                 selectedGender.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                self.genderUrlPart = "gender=\(title)"
+                DataManager.shared().saveToDefaults(title, for: "gender")
             }
         // RESET STATUS
         case 121:
+            DataManager.shared().deleteFromDefaults(from: "status")
             selectedStatus.first?.shortChange(Colors.systemWhite)
             selectedStatus.removeAll()
             sender.isHidden = true
         // RESET GENDER
         case 122:
+            DataManager.shared().deleteFromDefaults(from: "gender")
             selectedGender.first?.shortChange(Colors.systemWhite)
             selectedGender.removeAll()
             sender.isHidden = true
         default:
             break
-        }
-    }
-}
+    }}}
 
 // MARK: Extension
 // Маленький для изменения цвета текста кнопки
 extension UIButton {
     func shortChange(_ color: UIColor) {
         self.setTitleColor(color, for: .normal)
-    }
-}
+}}

@@ -8,6 +8,7 @@
 import UIKit
 
 class DetailViewController: UIViewController {
+    // Массив где хранятся объекты, полученные из API
     private var objects = [Package]() {
         didSet {
             DispatchQueue.main.async {
@@ -33,6 +34,10 @@ class DetailViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
     //MARK: Navigation
     // Навигация к FilterViewController - экрану фильтра
     @objc private func openFilterDetail() {
@@ -52,32 +57,30 @@ class DetailViewController: UIViewController {
     private func loadData() {
         guard let title = title else { return }
         guard let searchText = searchController.searchBar.text else { return }
-        // Если мы не производим фильтрацию, то загрузка идет по обычному сценарию
-        if !isFiltering {
-            DispatchQueue.global().async {
-                let url = NetManager.shared().getUrl(from: title)
-                NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
-                    self.objects = objects!
-                    self.nextPageToLoad = nextPage
-                    self.totalObjectsCount = totalObjects
-        }}} else {
-        // Если фильтрация идет, то перенаправляем objects в filteredObjects и меняем URL по внутренней логике NetManager.getUrl
-            DispatchQueue.global().async {
-                // Создаем URL из метода NetManager + текст из searchBar
-                let url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText
-                NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
-                    guard let objects = objects else {
-                        self.filteredObjects.removeAll()
-                        return
-                    } // Необходимая проверка для логики обновления данных на экране
-                    if self.filteredObjects.isEmpty {
-                        self.filteredObjects += objects
-                    } else {
-                        self.filteredObjects = objects
-                    }
-                    self.nextPageToLoad = nextPage
-                    self.totalObjectsCount = totalObjects
-        }}}}
+        var url = ""
+        // Если мы не производим поиск, то загрузка идет по обычному сценарию
+        if !isSearching {
+            url = NetManager.shared().getUrl(from: title)
+        // Если поиск идет, то переключаем URL на поисковой путем выставления в методе getUrl isFiltering = true
+        } else {
+            url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText
+        }
+        
+        DispatchQueue.global().async {
+            NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
+                guard let objects = objects else {
+                    self.objects.removeAll()
+                    return
+                }
+                if !self.isFiltering {
+                    self.objects = objects
+                } else {
+                    self.filteredObjects = objects
+                }
+                
+                self.nextPageToLoad = nextPage
+                self.totalObjectsCount = totalObjects
+    }}}
     // Метод загрузки всех следующих страницы из API (по 20 объектов на страницу)
     private func loadNextPage() {
         DispatchQueue.global().async {
@@ -139,18 +142,39 @@ class DetailViewController: UIViewController {
     }
     // Для отслеживания состояния фильтрации, True если идет поиск
     private var isFiltering: Bool {
-      return searchController.isActive && !isSearchBarEmpty
+      return existsInDefaults("status") || existsInDefaults("gender")
+    }
+    private var isSearching: Bool {
+        return searchController.isActive && !isSearchBarEmpty
     }
     // Функция возвращает отфилтрованный массив по критерию - "Содержится в имени object"
-    private func filterContentForSearchText(_ searchText: String) {
-      filteredObjects = objects.filter { (object: Package) -> Bool in
-        return object.name.lowercased().contains(searchText.lowercased())
+    private func filterContentWithSettings( _ array: inout [Package]) {
+        guard let status = DataManager.shared().loadStringFromDefaults(from: "status") else { return }
+        guard let gender = DataManager.shared().loadStringFromDefaults(from: "gender") else { return }
+        array = array.filter { (object: Package) -> Bool in
+            var result = false
+            if existsInDefaults("status") && existsInDefaults("gender") {
+                result = object.status?.lowercased() == status && object.gender?.lowercased() == gender
+                print("status gender")
+            } else if existsInDefaults("status") && !existsInDefaults("gender") {
+                result = object.status?.lowercased() == status
+                print("status")
+            } else if !existsInDefaults("status") && existsInDefaults("gender") {
+                result = object.gender?.lowercased() == gender
+                print("gender")
+            }
+            return result
     }
-      
       collectionView.reloadData()
         //MARK: Bug
         // дважды перезагружает, когда нажимается Cancel
         print("Reloaded")
+    }
+    
+    
+    // Проверка существует ли значение по ключу в user defaults
+    private func existsInDefaults(_ key: String) -> Bool {
+        return DataManager.shared().loadStringFromDefaults(from: key) != nil
     }
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -176,8 +200,7 @@ class DetailViewController: UIViewController {
 extension DetailViewController: UISearchBarDelegate {
     // Осуществляется запрос API по имени, введенном в searchBar после завершения ввода
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        //MARK: Баг, нужно сравнить количество в массиве с количеством всего элементов
-        if filteredObjects.count == totalObjectsCount {
+        if objects.count == totalObjectsCount {
             self.isLoading = true
             print("Is loading: true - searchBar")
         } else {
@@ -260,10 +283,11 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
                     self.loadNextPage()
                 }
             } else {
-                if filteredObjects.count == totalObjectsCount {
+                if objects.count == totalObjectsCount {
                     isLoading = false
                 } else {
                     self.loadNextPage()
-                }
-                print("isFiltering")
-    }}}}
+                }}
+            print("Filtered objects: \(filteredObjects.count)")
+            print("Objects : \(objects.count)")
+        }}}
