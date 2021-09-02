@@ -14,13 +14,24 @@ class DetailViewController: UIViewController {
             DispatchQueue.main.async {
                 if !self.isFiltering {
                     self.collectionView.reloadData()
+                    print("reload data in Objects")
     }}}}
     private var filteredObjects = [Package]() {
         didSet {
             DispatchQueue.main.async {
                 if self.isFiltering {
                     self.collectionView.reloadData()
+                    print("reload data in FilteredObjects")
     }}}}
+    private func loadObject(at index: Int) -> Package? {
+        var object: Package?
+        if isFiltering {
+            object = filteredObjects[index]
+        } else {
+            object = objects[index]
+        }
+        return object
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,11 +50,6 @@ class DetailViewController: UIViewController {
         }
         // Убираем слова из кнопки назад
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
     }
     
     //MARK: Navigation
@@ -225,17 +231,12 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-
-        let object: Package
-        
-        if isFiltering {
-            object = filteredObjects[indexPath.row]
-        } else {
-            object = objects[indexPath.row]
-        }
         
         if let cell = cell as? CustomCell {
-            cell.updateAppearanceFor(object, animated: true)
+            cell.updateAppearanceFor(.none, animated: false)
+            if let object = loadObject(at: indexPath.item) {
+                cell.updateAppearanceFor(object, animated: true)
+            }
         }
         return cell
     }

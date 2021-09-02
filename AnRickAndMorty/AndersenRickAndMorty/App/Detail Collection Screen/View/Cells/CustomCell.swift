@@ -7,6 +7,8 @@
 
 import UIKit
 
+let imageCache = NSCache<NSString, AnyObject>()
+
 class CustomCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
@@ -50,23 +52,21 @@ class CustomCell: UICollectionViewCell {
             label.text = object.name
         }
         if object.gender != nil {
-            NetManager.shared().loadImage(from: object) { image in
-                DispatchQueue.main.async {
-                    self.backG.image = image
-        }}}
+            backG.cacheImage(url: URL(string: object.image!)!)
+        }
         label.alpha = 1
         backG.alpha = 1
         foreG.alpha = 1
         loadingIndicator.alpha = 0
         loadingIndicator.stopAnimating()
-        backgroundColor = #colorLiteral(red: 0.9338415265, green: 0.9338632822, blue: 0.9338515401, alpha: 1)
+        backgroundColor = Colors.systemWhite
       } else {
         label.alpha = 0
         backG.alpha = 0
         foreG.alpha = 0
         loadingIndicator.alpha = 1
         loadingIndicator.startAnimating()
-        backgroundColor = Colors.systemGreen
+        backgroundColor = Colors.systemWhite
     }}
     
     override func prepareForReuse() {
@@ -113,3 +113,25 @@ class CustomCell: UICollectionViewCell {
             loadingIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
 }}
+
+extension UIImageView {
+  func cacheImage(url: URL){
+    
+    image = nil
+    
+    if let imageFromCache = imageCache.object(forKey: url.absoluteString as NSString) as? UIImage {
+        self.image = imageFromCache
+        return
+    }
+    
+    URLSession.shared.dataTask(with: url) { data, resp, error in
+        guard let data = data, error == nil else { return }
+        
+        let imageToCache = UIImage(data: data)
+        imageCache.setObject(imageToCache!, forKey: url.absoluteString as NSString)
+        DispatchQueue.main.async {
+            self.image = imageToCache
+        }
+    }.resume()
+  }
+}
