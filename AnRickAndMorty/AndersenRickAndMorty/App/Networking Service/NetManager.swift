@@ -11,9 +11,8 @@ class NetManager {
     static func shared() -> NetManager {
         return NetManager()
     }
-    
+    // Метод загрузки данных из API
     func fetchFilterDataPage(url: String, completion: @escaping ([Package]?, String?, Int?) -> ()) {
-    
         guard let url = URL(string: url) else { return }
         
         let task = URLSession.shared.dataTask(with: url) { data, resp, error in
@@ -40,6 +39,7 @@ class NetManager {
     }
     
     //MARK: DetailViewController
+    // Метод оперделяет нужный URL по ViewController.title
     func getUrl(from title: String, isFiltering: Bool = false) -> String {
         if isFiltering {
             switch title {
@@ -64,14 +64,12 @@ class NetManager {
             default:
                 print("Incorrect word in switch statement in DetailVC")
                 break
-            }
-        }
+        }}
         return ""
     }
     
     // Для загрузки картинок, используемых в Collection View Cell
     func loadImage(from: Package, completion: @escaping (UIImage) -> Void) {
-        
         DispatchQueue.global().async {
             guard let imgURL = URL(string: from.image!) else {
                 print("No image URL")
@@ -80,8 +78,7 @@ class NetManager {
             guard let imgData = try? Data.init(contentsOf: imgURL) else { return }
             let image = UIImage.init(data: imgData)
             completion(image!)
-        }
-    }
+    }}
     
     private init() {}
 }

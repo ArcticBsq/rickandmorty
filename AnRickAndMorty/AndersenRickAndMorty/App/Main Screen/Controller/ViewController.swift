@@ -41,9 +41,6 @@ class MainViewController: UIViewController {
         self.navigationController?.pushViewController(vc, animated: true)
         vc.title = sender.currentTitle
     }
-
-    
-    
 }
 
 
