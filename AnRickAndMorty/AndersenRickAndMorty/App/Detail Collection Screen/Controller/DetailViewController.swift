@@ -8,11 +8,30 @@
 import UIKit
 
 class DetailViewController: UIViewController {
+    // Массив где хранятся объекты, полученные из API
     private var objects = [Package]() {
         didSet {
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }}}
+                if !self.isFiltering {
+                    self.collectionView.reloadData()
+                    print("reload data in Objects")
+    }}}}
+    private var filteredObjects = [Package]() {
+        didSet {
+            DispatchQueue.main.async {
+                if self.isFiltering {
+                    self.collectionView.reloadData()
+                    print("reload data in FilteredObjects")
+    }}}}
+    private func loadObject(at index: Int) -> Package? {
+        var object: Package?
+        if isFiltering {
+            object = filteredObjects[index]
+        } else {
+            object = objects[index]
+        }
+        return object
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,33 +71,32 @@ class DetailViewController: UIViewController {
     private func loadData() {
         guard let title = title else { return }
         guard let searchText = searchController.searchBar.text else { return }
-        // Если мы не производим фильтрацию, то загрузка идет по обычному сценарию
-        if !isFiltering {
-            DispatchQueue.global().async {
-                let url = NetManager.shared().getUrl(from: title)
-                NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
-                    self.objects = objects!
-                    self.nextPageToLoad = nextPage
-                    self.totalObjectsCount = totalObjects
-        }}} else {
-        // Если фильтрация идет, то перенаправляем objects в filteredObjects и меняем URL по внутренней логике NetManager.getUrl
-            DispatchQueue.global().async {
-                // Создаем URL из метода NetManager + текст из searchBar
-                let url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText
-                NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
-                    guard let objects = objects else {
-                        self.filteredObjects.removeAll()
-                        return
-                    } // Необходимая проверка для логики обновления данных на экране
-                    if self.filteredObjects.isEmpty {
-                        self.filteredObjects += objects
-                    } else {
-                        self.filteredObjects = objects
+        var url = ""
+        // Если мы не производим поиск, то загрузка идет по обычному сценарию
+        if !isSearching { url = NetManager.shared().getUrl(from: title) }
+        // Если поиск идет, то переключаем URL на поисковой путем выставления в методе getUrl isFiltering = true
+        else { url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText }
+        
+        DispatchQueue.global().async {
+            NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
+                guard let objects = objects else {
+                    self.objects.removeAll()
+                    return
+                }
+                
+                self.nextPageToLoad = nextPage
+                self.totalObjectsCount = totalObjects
+                
+                if !self.isFiltering {
+                    self.objects = objects
+                } else {
+                    self.objects = objects
+                    self.filteredObjects = self.filterContentWithSettings(self.objects)
+                    if self.filteredObjects.count < 8 {
+                        self.loadNextPage()
                     }
-                    self.nextPageToLoad = nextPage
-                    self.totalObjectsCount = totalObjects
-        }}}}
-    // Метод загрузки всех следующих страницы из API (по 20 объектов на страницу)
+    }}}}
+    // Метод загрузки всех следующих страниц из API (по 20 объектов на страницу)
     private func loadNextPage() {
         DispatchQueue.global().async {
             if let url = self.nextPageToLoad {
@@ -96,7 +114,8 @@ class DetailViewController: UIViewController {
                             }
                         } else {
                             DispatchQueue.global().async {
-                                strongSelf.filteredObjects += objects
+                                strongSelf.objects += objects
+                                strongSelf.filteredObjects = strongSelf.filterContentWithSettings(strongSelf.objects)
     }}}}}}}
     
     //MARK: UI
@@ -128,29 +147,37 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: Search Controller
-    private var filteredObjects = [Package]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-    }}}
     // Для отслеживания изменений в тексте search bar
     private var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
     }
     // Для отслеживания состояния фильтрации, True если идет поиск
     private var isFiltering: Bool {
-      return searchController.isActive && !isSearchBarEmpty
+      return existsInDefaults("status") || existsInDefaults("gender")
+    }
+    private var isSearching: Bool {
+        return searchController.isActive && !isSearchBarEmpty
     }
     // Функция возвращает отфилтрованный массив по критерию - "Содержится в имени object"
-    private func filterContentForSearchText(_ searchText: String) {
-      filteredObjects = objects.filter { (object: Package) -> Bool in
-        return object.name.lowercased().contains(searchText.lowercased())
+    private func filterContentWithSettings(_ array: [Package]) -> [Package] {
+        let status = DataManager.shared().loadStringFromDefaults(from: "status")
+        let gender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        let resultArray = array.filter { (object: Package) -> Bool in
+            if existsInDefaults("status") && existsInDefaults("gender") {
+                return object.status?.lowercased() == status && object.gender?.lowercased() == gender
+            } else if existsInDefaults("status") && !existsInDefaults("gender") {
+                return object.status?.lowercased() == status
+            } else if !existsInDefaults("status") && existsInDefaults("gender") {
+                return object.gender?.lowercased() == gender
+            }
+            return false
+        }
+        return resultArray
     }
-      
-      collectionView.reloadData()
-        //MARK: Bug
-        // дважды перезагружает, когда нажимается Cancel
-        print("Reloaded")
+    
+    // Проверка существует ли значение по ключу в user defaults
+    private func existsInDefaults(_ key: String) -> Bool {
+        return DataManager.shared().loadStringFromDefaults(from: key) != nil
     }
     
     private let searchController = UISearchController(searchResultsController: nil)
@@ -176,8 +203,7 @@ class DetailViewController: UIViewController {
 extension DetailViewController: UISearchBarDelegate {
     // Осуществляется запрос API по имени, введенном в searchBar после завершения ввода
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        //MARK: Баг, нужно сравнить количество в массиве с количеством всего элементов
-        if filteredObjects.count == totalObjectsCount {
+        if objects.count == totalObjectsCount {
             self.isLoading = true
             print("Is loading: true - searchBar")
         } else {
@@ -204,29 +230,13 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
-
-        let object: Package
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
         
-        if isFiltering {
-            object = filteredObjects[indexPath.row]
-        } else {
-            object = objects[indexPath.row]
-        }
-        
-        switch title {
-        case "Characters":
-            cell.label.text = object.name
-            NetManager.shared().loadImage(from: object) { image in
-                DispatchQueue.main.async {
-                    cell.backG.image = image
-            }}
-        case "Locations":
-            cell.label.text = object.name
-        case "Episodes":
-            cell.label.text = "\(object.id). \(object.name)"
-        default:
-            print("error")
+        if let cell = cell as? CustomCell {
+            cell.updateAppearanceFor(.none, animated: false)
+            if let object = loadObject(at: indexPath.item) {
+                cell.updateAppearanceFor(object, animated: true)
+            }
         }
         return cell
     }
@@ -260,10 +270,12 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
                     self.loadNextPage()
                 }
             } else {
-                if filteredObjects.count == totalObjectsCount {
+                if objects.count == totalObjectsCount {
                     isLoading = false
                 } else {
                     self.loadNextPage()
-                }
-                print("isFiltering")
-    }}}}
+                }}
+            print("Filtered objects: \(filteredObjects.count)")
+            print("Objects : \(objects.count)")
+            print("Total : \(totalObjectsCount)")
+}}}

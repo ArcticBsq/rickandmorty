@@ -67,7 +67,6 @@ class NetManager {
         }}
         return ""
     }
-    
     // Для загрузки картинок, используемых в Collection View Cell
     func loadImage(from: Package, completion: @escaping (UIImage) -> Void) {
         DispatchQueue.global().async {
