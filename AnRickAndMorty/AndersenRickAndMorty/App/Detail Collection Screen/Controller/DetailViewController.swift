@@ -51,6 +51,15 @@ class DetailViewController: UIViewController {
         // Убираем слова из кнопки назад
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
+    var isFirstLoad = true
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        if !isFirstLoad {
+            loadData()
+        } else {
+            isFirstLoad = false
+        }
+    }
     
     //MARK: Navigation
     // Навигация к FilterViewController - экрану фильтра

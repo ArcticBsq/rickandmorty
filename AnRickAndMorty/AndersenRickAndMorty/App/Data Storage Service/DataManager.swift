@@ -17,8 +17,8 @@ class DataManager {
     
     private let defaults = UserDefaults.standard
     
-    func saveToDefaults(_ word: String, for key: String) {
-        defaults.setValue(word, forKey: key)
+    func saveToDefaults(_ object: Any, for key: String) {
+        defaults.set(object, forKey: key)
     }
     
     func attachBoolToDefaults(_ status: Bool, for key: String) {
