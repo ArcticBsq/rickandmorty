@@ -18,10 +18,9 @@ class CustomCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // Заднее изображение
+    // Заднее изображение для картинки из API
     let backG = UIFabric.shared().makeImageView()
         
-    
     // Переднее изображение, белая прослойка
     let foreG: UIImageView = {
         let iv = UIFabric.shared().makeImageView()
