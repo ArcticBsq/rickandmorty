@@ -9,8 +9,8 @@ import UIKit
 
 class FilterViewController: UIViewController {
     
-    var statusUrlPart: String?
-    var genderUrlPart: String?
+    var prevStatus: String?
+    var prevGender: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +19,31 @@ class FilterViewController: UIViewController {
         
         setupContainerView()
         setupActions()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        prevStatus = DataManager.shared().loadStringFromDefaults(from: "status")
+        prevGender = DataManager.shared().loadStringFromDefaults(from: "gender")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if isChanged() {
+            DataManager.shared().saveToDefaults(true, for: "ischanged")
+        } else {
+            DataManager.shared().saveToDefaults(false, for: "ischanged")
+        }
+    }
+    
+    private func isChanged() -> Bool {
+        let newGender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        let newStatus = DataManager.shared().loadStringFromDefaults(from: "status")
+        
+        if newGender != prevGender || newStatus != prevStatus {
+            return true
+        }
+        return false
     }
     
     // Инициализируем стеквью, в котором весь UI
