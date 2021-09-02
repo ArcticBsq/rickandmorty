@@ -37,13 +37,61 @@ class CustomCell: UICollectionViewCell {
          return label
     }()
     
+    let loadingIndicator = UIFabric.shared().makeActivityIndicator()
+    
+    var object: Package?
+    
+    private func displayObject(_ object: Package?) {
+      self.object = object
+      if let object = object {
+        if object.air_date != nil {
+            label.text = "\(object.id). \(object.name)"
+        } else {
+            label.text = object.name
+        }
+        if object.gender != nil {
+            NetManager.shared().loadImage(from: object) { image in
+                DispatchQueue.main.async {
+                    self.backG.image = image
+        }}}
+        label.alpha = 1
+        backG.alpha = 1
+        foreG.alpha = 1
+        loadingIndicator.alpha = 0
+        loadingIndicator.stopAnimating()
+        backgroundColor = #colorLiteral(red: 0.9338415265, green: 0.9338632822, blue: 0.9338515401, alpha: 1)
+      } else {
+        label.alpha = 0
+        backG.alpha = 0
+        foreG.alpha = 0
+        loadingIndicator.alpha = 1
+        loadingIndicator.startAnimating()
+        backgroundColor = Colors.systemGreen
+    }}
+    
+    override func prepareForReuse() {
+        DispatchQueue.main.async {
+            self.displayObject(.none)
+    }}
+    
+    func updateAppearanceFor(_ object: Package?, animated: Bool = true) {
+      DispatchQueue.main.async {
+        if animated {
+          UIView.animate(withDuration: 0.5) {
+            self.displayObject(object)
+          }
+        } else {
+            self.displayObject(object)
+    }}}
+    
     private func setupview() {
         contentView.addSubview(backG)
         contentView.addSubview(foreG)
         contentView.addSubview(label)
+        contentView.addSubview(loadingIndicator)
         self.layer.cornerRadius = 25
-        self.backgroundColor = .gray
         self.clipsToBounds = true
+        loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             backG.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -59,7 +107,9 @@ class CustomCell: UICollectionViewCell {
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             label.topAnchor.constraint(equalTo: foreG.topAnchor, constant: 10),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10)
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10),
+            
+            loadingIndicator.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
-    }
-}
+}}

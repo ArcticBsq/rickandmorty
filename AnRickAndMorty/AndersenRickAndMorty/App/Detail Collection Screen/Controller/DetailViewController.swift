@@ -12,8 +12,15 @@ class DetailViewController: UIViewController {
     private var objects = [Package]() {
         didSet {
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }}}
+                if !self.isFiltering {
+                    self.collectionView.reloadData()
+    }}}}
+    private var filteredObjects = [Package]() {
+        didSet {
+            DispatchQueue.main.async {
+                if self.isFiltering {
+                    self.collectionView.reloadData()
+    }}}}
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +43,7 @@ class DetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
     }
     
     //MARK: Navigation
@@ -59,12 +67,9 @@ class DetailViewController: UIViewController {
         guard let searchText = searchController.searchBar.text else { return }
         var url = ""
         // Если мы не производим поиск, то загрузка идет по обычному сценарию
-        if !isSearching {
-            url = NetManager.shared().getUrl(from: title)
+        if !isSearching { url = NetManager.shared().getUrl(from: title) }
         // Если поиск идет, то переключаем URL на поисковой путем выставления в методе getUrl isFiltering = true
-        } else {
-            url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText
-        }
+        else { url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText }
         
         DispatchQueue.global().async {
             NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
@@ -72,16 +77,20 @@ class DetailViewController: UIViewController {
                     self.objects.removeAll()
                     return
                 }
-                if !self.isFiltering {
-                    self.objects = objects
-                } else {
-                    self.filteredObjects = objects
-                }
                 
                 self.nextPageToLoad = nextPage
                 self.totalObjectsCount = totalObjects
-    }}}
-    // Метод загрузки всех следующих страницы из API (по 20 объектов на страницу)
+                
+                if !self.isFiltering {
+                    self.objects = objects
+                } else {
+                    self.objects = objects
+                    self.filteredObjects = self.filterContentWithSettings(self.objects)
+                    if self.filteredObjects.count < 8 {
+                        self.loadNextPage()
+                    }
+    }}}}
+    // Метод загрузки всех следующих страниц из API (по 20 объектов на страницу)
     private func loadNextPage() {
         DispatchQueue.global().async {
             if let url = self.nextPageToLoad {
@@ -99,7 +108,8 @@ class DetailViewController: UIViewController {
                             }
                         } else {
                             DispatchQueue.global().async {
-                                strongSelf.filteredObjects += objects
+                                strongSelf.objects += objects
+                                strongSelf.filteredObjects = strongSelf.filterContentWithSettings(strongSelf.objects)
     }}}}}}}
     
     //MARK: UI
@@ -131,11 +141,6 @@ class DetailViewController: UIViewController {
     }
     
     //MARK: Search Controller
-    private var filteredObjects = [Package]() {
-        didSet {
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-    }}}
     // Для отслеживания изменений в тексте search bar
     private var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
@@ -148,29 +153,21 @@ class DetailViewController: UIViewController {
         return searchController.isActive && !isSearchBarEmpty
     }
     // Функция возвращает отфилтрованный массив по критерию - "Содержится в имени object"
-    private func filterContentWithSettings( _ array: inout [Package]) {
-        guard let status = DataManager.shared().loadStringFromDefaults(from: "status") else { return }
-        guard let gender = DataManager.shared().loadStringFromDefaults(from: "gender") else { return }
-        array = array.filter { (object: Package) -> Bool in
-            var result = false
+    private func filterContentWithSettings(_ array: [Package]) -> [Package] {
+        let status = DataManager.shared().loadStringFromDefaults(from: "status")
+        let gender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        let resultArray = array.filter { (object: Package) -> Bool in
             if existsInDefaults("status") && existsInDefaults("gender") {
-                result = object.status?.lowercased() == status && object.gender?.lowercased() == gender
-                print("status gender")
+                return object.status?.lowercased() == status && object.gender?.lowercased() == gender
             } else if existsInDefaults("status") && !existsInDefaults("gender") {
-                result = object.status?.lowercased() == status
-                print("status")
+                return object.status?.lowercased() == status
             } else if !existsInDefaults("status") && existsInDefaults("gender") {
-                result = object.gender?.lowercased() == gender
-                print("gender")
+                return object.gender?.lowercased() == gender
             }
-            return result
+            return false
+        }
+        return resultArray
     }
-      collectionView.reloadData()
-        //MARK: Bug
-        // дважды перезагружает, когда нажимается Cancel
-        print("Reloaded")
-    }
-    
     
     // Проверка существует ли значение по ключу в user defaults
     private func existsInDefaults(_ key: String) -> Bool {
@@ -227,7 +224,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! CustomCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
 
         let object: Package
         
@@ -237,19 +234,8 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
             object = objects[indexPath.row]
         }
         
-        switch title {
-        case "Characters":
-            cell.label.text = object.name
-            NetManager.shared().loadImage(from: object) { image in
-                DispatchQueue.main.async {
-                    cell.backG.image = image
-            }}
-        case "Locations":
-            cell.label.text = object.name
-        case "Episodes":
-            cell.label.text = "\(object.id). \(object.name)"
-        default:
-            print("error")
+        if let cell = cell as? CustomCell {
+            cell.updateAppearanceFor(object, animated: true)
         }
         return cell
     }
@@ -290,4 +276,5 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
                 }}
             print("Filtered objects: \(filteredObjects.count)")
             print("Objects : \(objects.count)")
-        }}}
+            print("Total : \(totalObjectsCount)")
+}}}
