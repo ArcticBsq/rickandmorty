@@ -86,46 +86,64 @@ class DetailViewController: UIViewController {
         // Если поиск идет, то переключаем URL на поисковой путем выставления в методе getUrl isFiltering = true
         else { url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText }
         
-        DispatchQueue.global().async {
-            NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
-                guard let objects = objects else {
+        var getObjects: [Package]? {
+            didSet {
+                guard let array = getObjects else {
                     self.objects.removeAll()
+                    if isFiltering {
+                        self.filteredObjects.removeAll()
+                    }
                     return
                 }
                 
+                self.objects = array
+                // Если происходит фильтрация с FilterViewController
+                if isFiltering {
+                    self.filteredObjects = self.filterContentWithSettings(self.objects)
+                    // Если на экране меньше 8 элементов, происходит загрузка следующей страницы из АПИ
+                    // меньше 8 потому что на экране помещается 6 элементов и чтобы грузилась следующая страница
+                    // в didScroll методе нужна возможность скрола, она появляется, если 7 элементов и больше
+                    if self.filteredObjects.count < 8 {
+                            self.loadNextPage()
+                    }
+    }}}
+        DispatchQueue.global().async {
+            NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
+                guard let _objects = objects else {
+                    self.objects.removeAll()
+                    return
+                }
                 self.nextPageToLoad = nextPage
                 self.totalObjectsCount = totalObjects
-                
-                if !self.isFiltering {
-                    self.objects = objects
-                } else {
-                    self.objects = objects
-                    self.filteredObjects = self.filterContentWithSettings(self.objects)
-                    if self.filteredObjects.count < 8 {
-                        self.loadNextPage()
-                    }
-    }}}}
-    // Метод загрузки всех следующих страниц из API (по 20 объектов на страницу)
+                getObjects = _objects
+    }}}
+    
+    // Метод загрузки всех следующих страниц из API (по 20 объектов на страницу) + корректная фильтрация и догрузка следующих страниц
+    // если результат фильтрации меньше 1 страницы из 8 объектов
     private func loadNextPage() {
         DispatchQueue.global().async {
             if let url = self.nextPageToLoad {
+                var getObjects: [Package]? {
+                    didSet {
+                        guard let array = getObjects else { return }
+                        
+                        self.objects = Array(Set(self.objects + array))
+                        self.objects.sort {$0.id < $1.id }
+                        if self.isFiltering {
+                            self.filteredObjects = self.filterContentWithSettings(self.objects)
+                            if self.filteredObjects.count < 8 {
+                                self.loadNextPage()
+                        }
+    }}}
                 NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
                     guard let strongSelf = self else { return }
                     strongSelf.isLoading = false
                     print("Is loading: false - nextPage")
-                    guard let objects = objects else { return }
+                    guard let _objects = objects else { return }
                     strongSelf.nextPageToLoad = nextPage
                     strongSelf.totalObjectsCount = totalObjects
-                    DispatchQueue.main.async {
-                        if !self!.isFiltering {
-                            DispatchQueue.global().async {
-                                strongSelf.objects += objects
-                            }
-                        } else {
-                            DispatchQueue.global().async {
-                                strongSelf.objects += objects
-                                strongSelf.filteredObjects = strongSelf.filterContentWithSettings(strongSelf.objects)
-    }}}}}}}
+                    getObjects = _objects
+    }}}}
     
     //MARK: UI
     // создание collection view
@@ -162,7 +180,11 @@ class DetailViewController: UIViewController {
     }
     // Для отслеживания состояния фильтрации, True если идет поиск
     private var isFiltering: Bool {
-      return existsInDefaults("status") || existsInDefaults("gender")
+        // Да ошибка, но работает и не падает
+        if title == "Characters" {
+            return existsInDefaults("status") || existsInDefaults("gender")
+        }
+        return false
     }
     private var isSearching: Bool {
         return searchController.isActive && !isSearchBarEmpty

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Package: Codable {
+struct Package: Codable, Hashable {
     // Общее для всех
     let id: Int
     // Character
