@@ -16,6 +16,7 @@ class DetailViewController: UIViewController {
                     self.collectionView.reloadData()
                     print("reload data in Objects")
     }}}}
+    
     private var filteredObjects = [Package]() {
         didSet {
             DispatchQueue.main.async {
@@ -23,6 +24,7 @@ class DetailViewController: UIViewController {
                     self.collectionView.reloadData()
                     print("reload data in FilteredObjects")
     }}}}
+    
     private func loadObject(at index: Int) -> Package? {
         var object: Package?
         if isFiltering {
@@ -90,7 +92,7 @@ class DetailViewController: UIViewController {
             didSet {
                 guard let array = getObjects else {
                     self.objects.removeAll()
-                    if isFiltering {
+                    if self.isFiltering {
                         self.filteredObjects.removeAll()
                     }
                     return
@@ -98,7 +100,7 @@ class DetailViewController: UIViewController {
                 
                 self.objects = array
                 // Если происходит фильтрация с FilterViewController
-                if isFiltering {
+                if self.isFiltering {
                     self.filteredObjects = self.filterContentWithSettings(self.objects)
                     // Если на экране меньше 8 элементов, происходит загрузка следующей страницы из АПИ
                     // меньше 8 потому что на экране помещается 6 элементов и чтобы грузилась следующая страница

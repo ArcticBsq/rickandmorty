@@ -24,6 +24,7 @@
 		F6D1C31126DE3DFC00046E0A /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */; };
 		F6D1C31726DE4A7E00046E0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C31626DE4A7E00046E0A /* DataManager.swift */; };
 		F6E3FB9226E1EE0800BCBBF7 /* ModelDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E3FB9126E1EE0800BCBBF7 /* ModelDetail.swift */; };
+		F6E3FB9526E225CC00BCBBF7 /* NoResponseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E3FB9426E225CC00BCBBF7 /* NoResponseController.swift */; };
 		F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7BA6626CCF41700F04FD5 /* NetManager.swift */; };
 		F6EB390626D79817000FC816 /* DetailObjectVCStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6EB390526D79817000FC816 /* DetailObjectVCStack.swift */; };
 /* End PBXBuildFile section */
@@ -48,6 +49,7 @@
 		F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		F6D1C31626DE4A7E00046E0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		F6E3FB9126E1EE0800BCBBF7 /* ModelDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDetail.swift; sourceTree = "<group>"; };
+		F6E3FB9426E225CC00BCBBF7 /* NoResponseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResponseController.swift; sourceTree = "<group>"; };
 		F6E7BA6626CCF41700F04FD5 /* NetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetManager.swift; sourceTree = "<group>"; };
 		F6EB390526D79817000FC816 /* DetailObjectVCStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailObjectVCStack.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +75,7 @@
 				F608F27626CBDA5100BFCCF7 /* Delegates */,
 				F608F27726CBDA5F00BFCCF7 /* Launch Screen */,
 				F608F27826CBDA8000BFCCF7 /* Main Screen */,
+				F6E3FB9326E2257400BCBBF7 /* NoResponse Screen */,
 				F608F27C26CBDAFB00BFCCF7 /* Detail Collection Screen */,
 				F6D96B7C26D7C9F60029C6CA /* Filter Screen */,
 				F639930226CD15A600A3ABB3 /* Detail Object Screen */,
@@ -266,6 +269,14 @@
 			path = "Search and Filter";
 			sourceTree = "<group>";
 		};
+		F6E3FB9326E2257400BCBBF7 /* NoResponse Screen */ = {
+			isa = PBXGroup;
+			children = (
+				F6E3FB9426E225CC00BCBBF7 /* NoResponseController.swift */,
+			);
+			path = "NoResponse Screen";
+			sourceTree = "<group>";
+		};
 		F6EB390126D77F99000FC816 /* Networking Service */ = {
 			isa = PBXGroup;
 			children = (
@@ -378,6 +389,7 @@
 				F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */,
 				F639930926CD1ADE00A3ABB3 /* MainButton.swift in Sources */,
 				F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */,
+				F6E3FB9526E225CC00BCBBF7 /* NoResponseController.swift in Sources */,
 				F6D1C31126DE3DFC00046E0A /* FilterViewController.swift in Sources */,
 				F639930426CD15EB00A3ABB3 /* DetailObjectController.swift in Sources */,
 				F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */,
