@@ -27,24 +27,6 @@ class FilterViewController: UIViewController {
         prevGender = DataManager.shared().loadStringFromDefaults(from: "gender")
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        if isChanged() {
-            DataManager.shared().saveToDefaults(true, for: "ischanged")
-        } else {
-            DataManager.shared().saveToDefaults(false, for: "ischanged")
-        }
-    }
-    
-    private func isChanged() -> Bool {
-        let newGender = DataManager.shared().loadStringFromDefaults(from: "gender")
-        let newStatus = DataManager.shared().loadStringFromDefaults(from: "status")
-        
-        if newGender != prevGender || newStatus != prevStatus {
-            return true
-        }
-        return false
-    }
     
     // Инициализируем стеквью, в котором весь UI
     private let container = ContainerFilterView.shared().createContainerStack()
