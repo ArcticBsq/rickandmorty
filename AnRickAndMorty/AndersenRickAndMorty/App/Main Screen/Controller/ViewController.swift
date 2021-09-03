@@ -37,10 +37,20 @@ class MainViewController: UIViewController {
     
     // Навигация
     @objc func openDetail(_ sender: UIButton) {
-        let vc = DetailViewController()
-        self.navigationController?.pushViewController(vc, animated: true)
-        vc.title = sender.currentTitle
-    }
-}
+        NetManager.shared().isResponse(url: NetManager.shared().getUrl(from: sender.currentTitle!)) { isResponse in
+            if isResponse {
+                DispatchQueue.main.async {
+                    let vc = DetailViewController()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                    vc.title = sender.currentTitle
+                }
+                
+            } else {
+                DispatchQueue.main.async {
+                    let vc = NoResponseController()
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
+    }}}}
 
 

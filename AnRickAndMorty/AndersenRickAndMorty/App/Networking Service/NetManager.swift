@@ -38,6 +38,18 @@ class NetManager {
         task.resume()
     }
     
+    func isResponse(url: String, completion: @escaping ((Bool) -> ())) {
+        guard let url = URL(string: url) else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            guard response != nil else {
+                completion(false)
+                return
+            }
+            completion(true)
+        }.resume()
+    }
+    
     //MARK: DetailViewController
     // Метод оперделяет нужный URL по ViewController.title
     func getUrl(from title: String, isFiltering: Bool = false) -> String {
