@@ -23,8 +23,8 @@ final class FilterViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        previousStatus = DataManager.shared().loadStringFromDefaults(from: "status")
-        previousGender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        previousStatus = DataManager.shared.loadStringFromDefaults(from: "status")
+        previousGender = DataManager.shared.loadStringFromDefaults(from: "gender")
     }
     
     // Инициализируем стеквью, в котором весь UI
@@ -91,7 +91,7 @@ final class FilterViewController: UIViewController {
         unknownGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
         
         // Предзагрузка данных о Status для отображения выбранных настроек фильтрации
-        if let status = DataManager.shared().loadStringFromDefaults(from: "status") {
+        if let status = DataManager.shared.loadStringFromDefaults(from: "status") {
             switch status {
             case "alive":
                 selectedStatus.append(aliveButton!)
@@ -108,7 +108,7 @@ final class FilterViewController: UIViewController {
             }
         }
         // Предзагрузка данных о Gender для отображения выбранных настроек фильтрации
-        if let gender = DataManager.shared().loadStringFromDefaults(from: "gender") {
+        if let gender = DataManager.shared.loadStringFromDefaults(from: "gender") {
             switch gender {
             case "female":
                 selectedGender.append(femaleButton!)
@@ -142,36 +142,36 @@ final class FilterViewController: UIViewController {
             if selectedStatus.isEmpty {
                 selectedStatus.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(title, for: "status")
+                DataManager.shared.saveToDefaults(title, for: "status")
             } else {
                 selectedStatus.first?.titleLabel?.textColor = Colors.systemWhite
                 selectedStatus.removeAll()
                 selectedStatus.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(title, for: "status")
+                DataManager.shared.saveToDefaults(title, for: "status")
             }
         // Все случаи для GENDER параметров
         case 111, 112, 113, 114:
             if selectedGender.isEmpty {
                 selectedGender.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(title, for: "gender")
+                DataManager.shared.saveToDefaults(title, for: "gender")
             } else {
                 selectedGender.first?.titleLabel?.textColor = Colors.systemWhite
                 selectedGender.removeAll()
                 selectedGender.append(sender)
                 sender.shortChange(Colors.systemGreen)
-                DataManager.shared().saveToDefaults(title, for: "gender")
+                DataManager.shared.saveToDefaults(title, for: "gender")
             }
         // RESET STATUS
         case 121:
-            DataManager.shared().deleteFromDefaults(from: "status")
+            DataManager.shared.deleteFromDefaults(from: "status")
             selectedStatus.first?.shortChange(Colors.systemWhite)
             selectedStatus.removeAll()
             sender.isHidden = true
         // RESET GENDER
         case 122:
-            DataManager.shared().deleteFromDefaults(from: "gender")
+            DataManager.shared.deleteFromDefaults(from: "gender")
             selectedGender.first?.shortChange(Colors.systemWhite)
             selectedGender.removeAll()
             sender.isHidden = true

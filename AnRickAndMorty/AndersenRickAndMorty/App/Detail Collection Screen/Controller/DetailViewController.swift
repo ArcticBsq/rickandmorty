@@ -193,8 +193,8 @@ final class DetailViewController: UIViewController {
     }
     // Функция возвращает отфилmтрованный массив по критерию - "Содержится в имени object"
     private func filterContentWithSettings(_ array: [Package]) -> [Package] {
-        let status = DataManager.shared().loadStringFromDefaults(from: "status")
-        let gender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        let status = DataManager.shared.loadStringFromDefaults(from: "status")
+        let gender = DataManager.shared.loadStringFromDefaults(from: "gender")
         let resultArray = array.filter { (object: Package) -> Bool in
             // Если происходит фильтрация по status + gender
             if existsInDefaults("status") && existsInDefaults("gender") {
@@ -214,7 +214,7 @@ final class DetailViewController: UIViewController {
     
     // Проверка существует ли значение по ключу в user defaults
     private func existsInDefaults(_ key: String) -> Bool {
-        return DataManager.shared().loadStringFromDefaults(from: key) != nil
+        return DataManager.shared.loadStringFromDefaults(from: key) != nil
     }
     
     private let searchController = UISearchController(searchResultsController: nil)

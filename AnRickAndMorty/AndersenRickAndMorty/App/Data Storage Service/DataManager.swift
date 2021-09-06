@@ -9,9 +9,7 @@ import Foundation
 
 class DataManager {
     
-    static func shared() -> DataManager {
-        return DataManager()
-    }
+    static let shared = DataManager()
     
     private init() { }
     
