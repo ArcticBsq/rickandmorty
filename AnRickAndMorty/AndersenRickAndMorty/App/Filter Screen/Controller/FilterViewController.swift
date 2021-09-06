@@ -7,10 +7,10 @@
 
 import UIKit
 
-class FilterViewController: UIViewController {
+final class FilterViewController: UIViewController {
     
-    var prevStatus: String?
-    var prevGender: String?
+    var previousStatus: String?
+    var previousGender: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,10 +23,9 @@ class FilterViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        prevStatus = DataManager.shared().loadStringFromDefaults(from: "status")
-        prevGender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        previousStatus = DataManager.shared().loadStringFromDefaults(from: "status")
+        previousGender = DataManager.shared().loadStringFromDefaults(from: "gender")
     }
-    
     
     // Инициализируем стеквью, в котором весь UI
     private let container = ContainerFilterView.shared.createContainerStack()

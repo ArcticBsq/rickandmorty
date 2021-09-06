@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
     // Массив где хранятся объекты, полученные из API
     private var objects = [Package]() {
         didSet {
@@ -55,6 +55,7 @@ class DetailViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     var isFirstLoad = true
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if !isFirstLoad {
