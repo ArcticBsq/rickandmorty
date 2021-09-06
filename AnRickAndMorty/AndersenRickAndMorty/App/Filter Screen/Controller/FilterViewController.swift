@@ -29,7 +29,7 @@ class FilterViewController: UIViewController {
     
     
     // Инициализируем стеквью, в котором весь UI
-    private let container = ContainerFilterView.shared().createContainerStack()
+    private let container = ContainerFilterView.shared.createContainerStack()
     
     // Настройка UI контейнера
     private func setupContainerView() {
@@ -56,7 +56,6 @@ class FilterViewController: UIViewController {
     private var genderButtons = [UIButton]()
     private var selectedGender = [UIButton]() {
         didSet {
-        // Здесь происходит инициализация кнопки reset
             let resetGenderButton = self.view.viewWithTag(122) as? UIButton
             resetGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
             resetGenderButton?.isHidden = false
@@ -92,6 +91,7 @@ class FilterViewController: UIViewController {
         genderButtons.append(unknownGenderButton!)
         unknownGenderButton?.addTarget(self, action: #selector(setParameters), for: .touchUpInside)
         
+        // Предзагрузка данных о Status для отображения выбранных настроек фильтрации
         if let status = DataManager.shared().loadStringFromDefaults(from: "status") {
             switch status {
             case "alive":
@@ -104,10 +104,11 @@ class FilterViewController: UIViewController {
                 selectedStatus.append(unknownButton!)
                 unknownButton?.shortChange(Colors.systemGreen)
             default:
+                print("Unknown status from defaults in setupActions")
                 break
             }
         }
-        
+        // Предзагрузка данных о Gender для отображения выбранных настроек фильтрации
         if let gender = DataManager.shared().loadStringFromDefaults(from: "gender") {
             switch gender {
             case "female":

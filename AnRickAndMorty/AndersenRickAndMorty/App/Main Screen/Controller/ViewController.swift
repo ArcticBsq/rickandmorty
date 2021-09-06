@@ -19,12 +19,12 @@ class MainViewController: UIViewController {
     }
     
     private func setupMainScreen() {
-        // Делаем кнопочки
+    // Делаем кнопочки
         let charView = MainButtonView.shared().createButton(title: "Characters", image: "charactersPic", selector: #selector(openDetail))
         let locView = MainButtonView.shared().createButton(title: "Locations", image: "locationsPic", selector: #selector(openDetail))
         let epiView = MainButtonView.shared().createButton(title: "Episodes", image: "episodesPic", selector: #selector(openDetail))
-        // Делаем stackView из кнопочек
-        let buttonsStackView = UIFabric.shared().makeAStack(with: [charView, locView, epiView], distribution: .fillEqually)
+    // Делаем stackView из кнопочек
+        let buttonsStackView = UIFabric.shared.makeAStack(with: [charView, locView, epiView], distribution: .fillEqually)
         
         view.addSubview(buttonsStackView)
         NSLayoutConstraint.activate([
@@ -37,14 +37,14 @@ class MainViewController: UIViewController {
     
     // Навигация
     @objc func openDetail(_ sender: UIButton) {
-        NetManager.shared().isResponse(url: NetManager.shared().getUrl(from: sender.currentTitle!)) { isResponse in
+        NetManager.shared.isResponse(url: NetManager.shared.getUrl(from: sender.currentTitle!)) { isResponse in
             if isResponse {
                 DispatchQueue.main.async {
                     let vc = DetailViewController()
                     self.navigationController?.pushViewController(vc, animated: true)
                     vc.title = sender.currentTitle
+                    vc.controllerTitle = sender.currentTitle
                 }
-                
             } else {
                 DispatchQueue.main.async {
                     let vc = NoResponseController()

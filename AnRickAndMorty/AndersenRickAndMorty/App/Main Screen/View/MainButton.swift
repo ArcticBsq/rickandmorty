@@ -18,21 +18,21 @@ class MainButtonView {
     func createButton(title: String, image: String, selector: Selector) -> UIView {
             
         // 1 создаем нижний слой uiview
-        let view = UIFabric.shared().makeView()
+        let view = UIFabric.shared.makeView()
             
         // 2 создаем средний слой uibutton
-        let button = UIFabric.shared().makeButton(backColor: nil, text: title, textColor: nil)
+        let button = UIFabric.shared.makeButton(backColor: nil, text: title, textColor: nil)
             button.setImage(UIImage(named: image), for: .normal)
             button.addTarget(self, action: selector, for: .touchUpInside)
             
         // 3 создаем верхний слой uimageview
-        let imageview = UIFabric.shared().makeImageView()
+        let imageview = UIFabric.shared.makeImageView()
         // Делаем картинку бледной
                 
         imageview.backgroundColor = UIColor.white.withAlphaComponent(0.5)
             
         // 4 верхушка айсберга uilabel
-        let label = UIFabric.shared().makeLabel()
+        let label = UIFabric.shared.makeLabel()
             label.text = title
         label.font = UIFont.boldSystemFont(ofSize: ViewMetrics.MainScreenButtonFontSize)
         

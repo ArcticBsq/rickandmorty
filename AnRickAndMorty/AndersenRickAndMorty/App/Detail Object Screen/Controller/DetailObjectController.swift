@@ -20,10 +20,13 @@ class DetailObjectController: UIViewController {
     }
     
     private func setupView() {
-        let pictureView = UIFabric.shared().makeImageView()
+        let pictureView = UIFabric.shared.makeImageView()
         pictureView.image = image
-
-        let globalStack = DetailObjectVCStack.shared().createStack(from: avatar!)
+        guard let _avatar = avatar else {
+            print("Error! /n No Package object was sent from DetailCollectionScreen")
+            return
+        }
+        let globalStack = DetailObjectVCStack.shared().createStack(from: _avatar)
         
         view.addSubview(globalStack)
         view.addSubview(pictureView)
@@ -35,10 +38,8 @@ class DetailObjectController: UIViewController {
             pictureView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.45),
             
             globalStack.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            globalStack.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70),
             globalStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             globalStack.topAnchor.constraint(equalTo: pictureView.bottomAnchor, constant: 20)
         ])
-       
     }
 }

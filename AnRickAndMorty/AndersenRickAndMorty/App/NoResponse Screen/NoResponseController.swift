@@ -16,16 +16,16 @@ class NoResponseController: UIViewController {
         setupView()
     }
     
-    let imageView = UIFabric.shared().makeImageView()
-    let topLabel = UIFabric.shared().makeLabel()
-    let botLabel = UIFabric.shared().makeLabel()
+    let imageView = UIFabric.shared.makeImageView()
+    let topLabel = UIFabric.shared.makeLabel()
+    let botLabel = UIFabric.shared.makeLabel()
     
     private func setupView() {
         imageView.image = UIImage(named: "noResponsePic")
         view.addSubview(imageView)
         setupTopLabel()
         setupBotLabel()
-        let stack = UIFabric.shared().makeAStack(with: [topLabel, botLabel], distribution: .equalSpacing, spacing: 10)
+        let stack = UIFabric.shared.makeAStack(with: [topLabel, botLabel], distribution: .equalSpacing, spacing: 10)
         view.addSubview(stack)
         
         NSLayoutConstraint.activate([

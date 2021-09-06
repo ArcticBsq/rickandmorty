@@ -15,206 +15,39 @@ class DetailObjectVCStack {
     
     private init() { }
     
-    let pictureView = UIFabric.shared().makeImageView()
-    
-    let idLLabel = UIFabric.shared().makeLabel()
-    let idRLabel = UIFabric.shared().makeLabel()
-    
-    let nameLLabel = UIFabric.shared().makeLabel()
-    let nameRLabel = UIFabric.shared().makeLabel()
-    
-    let statusLLabel = UIFabric.shared().makeLabel()
-    let statusRLabel = UIFabric.shared().makeLabel()
-    
-    let speciesLLabel = UIFabric.shared().makeLabel()
-    let speciesRLabel = UIFabric.shared().makeLabel()
-    
-    let genderLLabel = UIFabric.shared().makeLabel()
-    let genderRLabel = UIFabric.shared().makeLabel()
-    
-    let dimensionLLabel = UIFabric.shared().makeLabel()
-    let dimensionRLabel = UIFabric.shared().makeLabel()
-    
-    let typeLLabel = UIFabric.shared().makeLabel()
-    let typeRLabel = UIFabric.shared().makeLabel()
-    
-    let airDateLLabel = UIFabric.shared().makeLabel()
-    let airDateRLabel = UIFabric.shared().makeLabel()
-    
-    let episodeLLabel = UIFabric.shared().makeLabel()
-    let episodeRLabel = UIFabric.shared().makeLabel()
+    // Функция возвращает стеквью, из которых происходит заполнение страницы
+    // 1 стеквью = 1 строка информации
+    private func makeTextRowStack(leftText: String, rightText: String, addToParent: UIStackView){
+        let leftLabel = UIFabric.shared.makeLabel(text: leftText, textColor: Colors.systemGreen, textAlignment: .left, font: Fonts.detailObjectScreenLeft, horizontalHugPriority: .defaultLow + 1)
+        
+        let rightLabel = UIFabric.shared.makeLabel(text: rightText, textColor: Colors.systemWhite, textAlignment: .left, font: Fonts.detailObjectScreenRight)
+        
+        let stack = UIFabric.shared.makeAStack(with: [leftLabel, rightLabel], axis: .horizontal, distribution: .fill, spacing: 30, isHidden: false)
+        
+        addToParent.addArrangedSubview(stack)
+    }
     
     func createStack(from avatar: Package) -> UIStackView {
-        let innerStack = UIFabric.shared().makeAStack(with: [], distribution: .fill, spacing: ViewMetrics.detailObjectStackSpacing)
-            
-             let idStack: UIStackView = {
-                idLLabel.text = "ID:"
-                idLLabel.textColor = Colors.systemGreen
-                idLLabel.textAlignment = .left
-                idLLabel.backgroundColor = .blue
-                idLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                idLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                
-                idRLabel.text = "\(avatar.id)"
-                idRLabel.textColor = Colors.systemWhite
-                idRLabel.textAlignment = .left
-                idRLabel.backgroundColor = .red
-                idRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                
-                let stack = UIFabric.shared().makeAStack(with: [idLLabel, idRLabel], axis: .horizontal, distribution: .fill, spacing: 30)
-                stack.isHidden = true
-                
-                return stack
-            }()
-            innerStack.addArrangedSubview(idStack)
-            
-             let nameStack: UIStackView = {
-                nameLLabel.text = "Name: "
-                nameLLabel.textColor = Colors.systemGreen
-                nameLLabel.textAlignment = .left
-                nameLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                nameLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                
-                let name = avatar.name
-                nameRLabel.text = name
-                nameRLabel.textAlignment = .left
-                nameRLabel.textColor = Colors.systemWhite
-                nameRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                
-                let stack = UIFabric.shared().makeAStack(with: [nameLLabel, nameRLabel], axis: .horizontal, distribution: .fill)
-                
-                return stack
-            }()
-            innerStack.addArrangedSubview(nameStack)
-            
-            if let status = avatar.status {
-                let statusStack: UIStackView = {
-                   statusLLabel.text = "Status:"
-                   statusLLabel.textColor = Colors.systemGreen
-                    statusLLabel.textAlignment = .left
-                    statusLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                    statusLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                       
-                    statusRLabel.text = "\(status)"
-                   statusRLabel.textColor = Colors.systemWhite
-                    statusRLabel.textAlignment = .left
-                    statusRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                    
-                   let stack = UIFabric.shared().makeAStack(with: [statusLLabel, statusRLabel], axis: .horizontal, distribution: .fill)
-                    
-                   return stack
-               }()
-                innerStack.addArrangedSubview(statusStack)
-            }
-            
-            if let species = avatar.species {
-                let speciesStack: UIStackView = {
-                   speciesLLabel.text = "Species:"
-                   speciesLLabel.textColor = Colors.systemGreen
-                    speciesLLabel.textAlignment = .left
-                    speciesLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                    speciesLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                   speciesRLabel.text = "\(species)"
-                    speciesRLabel.textColor = Colors.systemWhite
-                    speciesRLabel.textAlignment = .left
-                    speciesRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                   let stack = UIFabric.shared().makeAStack(with: [speciesLLabel, speciesRLabel], axis: .horizontal, distribution: .fill)
-                   
-                   return stack
-               }()
-                innerStack.addArrangedSubview(speciesStack)
-            }
-             
-            if let gender = avatar.gender {
-                let genderStack: UIStackView = {
-                   genderLLabel.text = "Gender:"
-                   genderLLabel.textColor = Colors.systemGreen
-                    genderLLabel.textAlignment = .left
-                    genderLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                    genderLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                   genderRLabel.text = "\(gender)"
-                   genderRLabel.textColor = Colors.systemWhite
-                    genderRLabel.textAlignment = .left
-                    genderRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                   let stack = UIFabric.shared().makeAStack(with: [genderLLabel, genderRLabel], axis: .horizontal, distribution: .fill)
-                   
-                   return stack
-               }()
-                innerStack.addArrangedSubview(genderStack)
-            }
-            
-            if let dimension = avatar.dimension {
-                let dimensionStack: UIStackView = {
-                    dimensionLLabel.text = "Dimension:"
-                    dimensionLLabel.textColor = Colors.systemGreen
-                    dimensionLLabel.textAlignment = .left
-                    dimensionLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                    dimensionLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                    dimensionRLabel.text = "\(dimension)"
-                    dimensionRLabel.textColor = Colors.systemWhite
-                    dimensionRLabel.textAlignment = .left
-                    dimensionRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                    let stack = UIFabric.shared().makeAStack(with: [dimensionLLabel, dimensionRLabel], axis: .horizontal, distribution: .fill)
-                   
-                   return stack
-               }()
-                innerStack.addArrangedSubview(dimensionStack)
-            }
-            
-            if let type = avatar.type {
-                if type.count > 1 {
-                    let typeStack: UIStackView = {
-                        typeLLabel.text = "Type:"
-                        typeLLabel.textColor = Colors.systemGreen
-                        typeLLabel.textAlignment = .left
-                        typeLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                        typeLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                       
-                        typeRLabel.text = "\(type)"
-                        typeRLabel.textColor = Colors.systemWhite
-                        typeRLabel.textAlignment = .left
-                        typeRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                       
-                        let stack = UIFabric.shared().makeAStack(with: [typeLLabel, typeRLabel], axis: .horizontal, distribution: .fill)
-                       
-                       return stack
-                   }()
-                    innerStack.addArrangedSubview(typeStack)
-                }
-                
-            }
-            
-            if let airDate = avatar.air_date {
-                let airDateStack: UIStackView = {
-                    airDateLLabel.text = "Air date:"
-                    airDateLLabel.textColor = Colors.systemGreen
-                    airDateLLabel.textAlignment = .left
-                    airDateLLabel.setContentHuggingPriority(.defaultLow + 1, for: .horizontal)
-                    airDateLLabel.font = UIFont.boldSystemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                    airDateRLabel.text = "\(airDate)"
-                    airDateRLabel.textColor = Colors.systemWhite
-                    airDateRLabel.textAlignment = .left
-                    airDateRLabel.font = UIFont.systemFont(ofSize: ViewMetrics.detailObjectFontSize)
-                   
-                    let stack = UIFabric.shared().makeAStack(with: [airDateLLabel, airDateRLabel], axis: .horizontal, distribution: .fill)
-                   
-                   return stack
-               }()
-                innerStack.addArrangedSubview(airDateStack)
-            }
-            
-        innerStack.spacing = ViewMetrics.detailObjectStackSpacing
-        innerStack.setContentHuggingPriority(.defaultHigh, for: .vertical)
+    // Главный stack, контейнер для элементов
+        let innerStack = UIFabric.shared.makeAStack(with: [], distribution: .fill, spacing: ViewMetrics.detailObjectStackSpacing)
+    // Так создаются строки, пример - код создания строки Name
+        makeTextRowStack(leftText: "Name:", rightText: avatar.name, addToParent: innerStack)
+    
+        if let status = avatar.status { makeTextRowStack(leftText: "Status:", rightText: status, addToParent: innerStack) }
+    
+        if let species = avatar.species { makeTextRowStack(leftText: "Species:", rightText: species, addToParent: innerStack) }
+    
+        if let gender = avatar.gender { makeTextRowStack(leftText: "Gender:", rightText: gender, addToParent: innerStack) }
+    
+        if let dimension = avatar.dimension { makeTextRowStack(leftText: "Dimension:", rightText: dimension, addToParent: innerStack) }
         
-        let outerStack = UIFabric.shared().makeAStack(with: [pictureView, innerStack], distribution: .fill)
-        outerStack.spacing = ViewMetrics.detailObjectStackSpacing
+        if let type = avatar.type {
+            if !type.isEmpty { makeTextRowStack(leftText: "Type:", rightText: type, addToParent: innerStack) }
+        }
+        
+        if let airDate = avatar.air_date { makeTextRowStack(leftText: "Air date:", rightText: airDate, addToParent: innerStack) }
+            
+        let outerStack = UIFabric.shared.makeAStack(with: [innerStack], distribution: .fill, spacing: ViewMetrics.detailObjectStackSpacing)
             
         return outerStack
     }

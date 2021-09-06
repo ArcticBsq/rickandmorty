@@ -21,11 +21,11 @@ class CustomCell: UICollectionViewCell {
     }
     
     // Заднее изображение для картинки из API
-    let backG = UIFabric.shared().makeImageView()
+    let backG = UIFabric.shared.makeImageView()
         
     // Переднее изображение, белая прослойка
     let foreG: UIImageView = {
-        let iv = UIFabric.shared().makeImageView()
+        let iv = UIFabric.shared.makeImageView()
         iv.layer.cornerRadius = 0
         iv.backgroundColor = UIColor.white.withAlphaComponent(0.5)
         return iv
@@ -33,13 +33,13 @@ class CustomCell: UICollectionViewCell {
     
     // Лейбл названия элемента
     let label: UILabel = {
-        let label = UIFabric.shared().makeLabel()
+        let label = UIFabric.shared.makeLabel()
         label.font = UIFont.systemFont(ofSize: 20)
         label.numberOfLines = 0
          return label
     }()
     
-    let loadingIndicator = UIFabric.shared().makeActivityIndicator()
+    let loadingIndicator = UIFabric.shared.makeActivityIndicator()
     
     var object: Package?
     
@@ -121,17 +121,18 @@ extension UIImageView {
     
     if let imageFromCache = imageCache.object(forKey: url.absoluteString as NSString) as? UIImage {
         self.image = imageFromCache
+        print("Got it from cash")
         return
+    } else {
+        URLSession.shared.dataTask(with: url) { data, resp, error in
+            guard let data = data, error == nil else { return }
+            
+            let imageToCache = UIImage(data: data)
+            imageCache.setObject(imageToCache!, forKey: url.absoluteString as NSString)
+            DispatchQueue.main.async {
+                self.image = imageToCache
+            }
+        }.resume()
     }
-    
-    URLSession.shared.dataTask(with: url) { data, resp, error in
-        guard let data = data, error == nil else { return }
-        
-        let imageToCache = UIImage(data: data)
-        imageCache.setObject(imageToCache!, forKey: url.absoluteString as NSString)
-        DispatchQueue.main.async {
-            self.image = imageToCache
-        }
-    }.resume()
   }
 }

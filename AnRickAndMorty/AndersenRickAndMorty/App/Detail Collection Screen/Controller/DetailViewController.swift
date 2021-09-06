@@ -34,6 +34,7 @@ class DetailViewController: UIViewController {
         }
         return object
     }
+    var controllerTitle: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,7 +49,7 @@ class DetailViewController: UIViewController {
         loadCollection()
         // Кастомная иконка фильтра, если выбран Characters
         if title == "Characters" {
-            self.navigationItem.rightBarButtonItem = UIFabric.shared().makeBarButton(self, action: #selector(openFilterDetail), imageName: "filterIcon2x", size: CGSize(width: 30, height: 30))
+            self.navigationItem.rightBarButtonItem = UIFabric.shared.makeBarButton(self, action: #selector(openFilterDetail), imageName: "filterIcon2x", size: CGSize(width: 30, height: 30))
         }
         // Убираем слова из кнопки назад
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
@@ -84,9 +85,9 @@ class DetailViewController: UIViewController {
         guard let searchText = searchController.searchBar.text else { return }
         var url = ""
         // Если мы не производим поиск, то загрузка идет по обычному сценарию
-        if !isSearching { url = NetManager.shared().getUrl(from: title) }
+        if !isSearching { url = NetManager.shared.getUrl(from: title) }
         // Если поиск идет, то переключаем URL на поисковой путем выставления в методе getUrl isFiltering = true
-        else { url = NetManager.shared().getUrl(from: title, isFiltering: true) + searchText }
+        else { url = NetManager.shared.getUrl(from: title, isFiltering: true) + searchText }
         
         var getObjects: [Package]? {
             didSet {
@@ -110,7 +111,7 @@ class DetailViewController: UIViewController {
                     }
     }}}
         DispatchQueue.global().async {
-            NetManager.shared().fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
+            NetManager.shared.fetchFilterDataPage(url: url) { objects, nextPage, totalObjects in
                 guard let _objects = objects else {
                     self.objects.removeAll()
                     return
@@ -120,8 +121,8 @@ class DetailViewController: UIViewController {
                 getObjects = _objects
     }}}
     
-    // Метод загрузки всех следующих страниц из API (по 20 объектов на страницу) + корректная фильтрация и догрузка следующих страниц
-    // если результат фильтрации меньше 1 страницы из 8 объектов
+    // Метод загрузки всех следующих страниц из API
+    // если результат фильтрации меньше 1 страницы из 8 объектов, то происходит загрузка следующих страниц
     private func loadNextPage() {
         DispatchQueue.global().async {
             if let url = self.nextPageToLoad {
@@ -137,7 +138,7 @@ class DetailViewController: UIViewController {
                                 self.loadNextPage()
                         }
     }}}
-                NetManager.shared().fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
+                NetManager.shared.fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
                     guard let strongSelf = self else { return }
                     strongSelf.isLoading = false
                     print("Is loading: false - nextPage")
@@ -149,7 +150,7 @@ class DetailViewController: UIViewController {
     
     //MARK: UI
     // создание collection view
-    private let collectionView = UIFabric.shared().makeCollectionView(scroll: .vertical, backColor: Colors.systemBack, cellIdentifier: "cell")
+    private let collectionView = UIFabric.shared.makeCollectionView(scroll: .vertical, backColor: Colors.systemBack, cellIdentifier: "cell")
     // Настройка collection view
     private func loadCollection() {
         view.addSubview(collectionView)
@@ -162,12 +163,12 @@ class DetailViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -15),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-        // Когда коллекция загрузилась, останавливаем activity indicator
+    // Когда коллекция загрузилась, останавливаем activity indicator
         activityIndicator.stopAnimating()
     }
     
     // activity indicator
-    private let activityIndicator = UIFabric.shared().makeActivityIndicator()
+    private let activityIndicator = UIFabric.shared.makeActivityIndicator()
     
     private func loadIndicator() {
         view.addSubview(activityIndicator)
@@ -180,26 +181,28 @@ class DetailViewController: UIViewController {
     private var isSearchBarEmpty: Bool {
       return searchController.searchBar.text?.isEmpty ?? true
     }
-    // Для отслеживания состояния фильтрации, True если идет поиск
+    // Для отслеживания состояния фильтрации, True если происходит фильтрация по gender/status
     private var isFiltering: Bool {
-        // Да ошибка, но работает и не падает
-        if title == "Characters" {
-            return existsInDefaults("status") || existsInDefaults("gender")
-        }
-        return false
+        let result = controllerTitle == "Characters" ? (existsInDefaults("status") || existsInDefaults("gender")) : false
+        return result
     }
+    // Ведется ли поиск по имени в NavigationBar
     private var isSearching: Bool {
         return searchController.isActive && !isSearchBarEmpty
     }
-    // Функция возвращает отфилтрованный массив по критерию - "Содержится в имени object"
+    // Функция возвращает отфилmтрованный массив по критерию - "Содержится в имени object"
     private func filterContentWithSettings(_ array: [Package]) -> [Package] {
         let status = DataManager.shared().loadStringFromDefaults(from: "status")
         let gender = DataManager.shared().loadStringFromDefaults(from: "gender")
         let resultArray = array.filter { (object: Package) -> Bool in
+            // Если происходит фильтрация по status + gender
             if existsInDefaults("status") && existsInDefaults("gender") {
+            // Возвращаем массив элементов, у которых object + gender == object + gender из defaults
                 return object.status?.lowercased() == status && object.gender?.lowercased() == gender
+            // Если фильтрация только по Status
             } else if existsInDefaults("status") && !existsInDefaults("gender") {
                 return object.status?.lowercased() == status
+            // Если фильтрация только по Gender
             } else if !existsInDefaults("status") && existsInDefaults("gender") {
                 return object.gender?.lowercased() == gender
             }
@@ -296,18 +299,12 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout, UICollection
             
             print("Is loading: true - scroll")
             // В зависимости от того, фильтруется что-то в searchBar или нет вызываются разные методы для загрузки
-            if !isFiltering {
-                if objects.count == totalObjectsCount {
-                    isLoading = false
-                } else {
-                    self.loadNextPage()
-                }
+            if objects.count == totalObjectsCount {
+                isLoading = false
             } else {
-                if objects.count == totalObjectsCount {
-                    isLoading = false
-                } else {
-                    self.loadNextPage()
-                }}
+                self.loadNextPage()
+            }
+            
             print("Filtered objects: \(filteredObjects.count)")
             print("Objects : \(objects.count)")
             print("Total : \(totalObjectsCount)")

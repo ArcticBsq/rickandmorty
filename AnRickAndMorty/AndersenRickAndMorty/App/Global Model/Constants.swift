@@ -15,6 +15,12 @@ enum ViewMetrics {
     static let detailObjectStackSpacing: CGFloat = 20.0
 }
 
+enum Fonts {
+    static let filterScreen: UIFont = UIFont.systemFont(ofSize: 18)
+    static let detailObjectScreenLeft: UIFont = UIFont.boldSystemFont(ofSize: 20)
+    static let detailObjectScreenRight: UIFont = UIFont.systemFont(ofSize: 20)
+}
+
 enum APIconstants {
     static let characters: String = "https://rickandmortyapi.com/api/character/?page="
     static let locations: String = "https://rickandmortyapi.com/api/location/?page="
