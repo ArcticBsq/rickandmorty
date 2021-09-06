@@ -9,43 +9,41 @@ import UIKit
 
 class ContainerFilterView {
     
-    static func shared() -> ContainerFilterView {
-        return ContainerFilterView()
-    }
+    static let shared = ContainerFilterView()
     
     private init() { }
     
     // Элементы, относящиеся к Status фильтру
-    let statusLLabel = UIFabric.shared().makeLabel(text: "Status", textColor: Colors.systemGreen, fontSize: 18, textAlignment: .left)
-    let statusRButton = UIFabric.shared().makeButton(text: "Reset", textColor: Colors.systemRedActiv, textActiveColor: Colors.systemRedActiv)
+    let statusLLabel = UIFabric.shared.makeLabel(text: "Status", textColor: Colors.systemGreen, textAlignment: .left, font: Fonts.filterScreen)
+    let statusRButton = UIFabric.shared.makeButton(text: "Reset", textColor: Colors.systemRedActiv, textActiveColor: Colors.systemRedActiv)
     // Типы фильтров
-    let aliveButton = UIFabric.shared().makeButton(text: "●     Alive", textColor: Colors.systemWhite)
-    let deadButton = UIFabric.shared().makeButton(text: "●     Dead", textColor: Colors.systemWhite)
-    let unknownButton = UIFabric.shared().makeButton(text: "●     Unknown", textColor: Colors.systemWhite)
+    let aliveButton = UIFabric.shared.makeButton(text: "●     Alive", textColor: Colors.systemWhite)
+    let deadButton = UIFabric.shared.makeButton(text: "●     Dead", textColor: Colors.systemWhite)
+    let unknownButton = UIFabric.shared.makeButton(text: "●     Unknown", textColor: Colors.systemWhite)
     
     // Элементы относящиеся к Gender фильтру
-    let genderLLabel = UIFabric.shared().makeLabel(text: "Gender", textColor: Colors.systemGreen, fontSize: 18, textAlignment: .left)
-    let genderRButton = UIFabric.shared().makeButton(text: "Reset", textColor: Colors.systemRedActiv, textActiveColor: Colors.systemRedActiv)
+    let genderLLabel = UIFabric.shared.makeLabel(text: "Gender", textColor: Colors.systemGreen, textAlignment: .left, font: Fonts.filterScreen)
+    let genderRButton = UIFabric.shared.makeButton(text: "Reset", textColor: Colors.systemRedActiv, textActiveColor: Colors.systemRedActiv)
     // Типы фильтров
-    let femaleButton = UIFabric.shared().makeButton(text: "●     Female", textColor: Colors.systemWhite)
-    let maleButton = UIFabric.shared().makeButton(text: "●     Male", textColor: Colors.systemWhite)
-    let genderlessButton = UIFabric.shared().makeButton(text: "●     Genderless", textColor: Colors.systemWhite)
-    let unknownGenderButton = UIFabric.shared().makeButton(backColor: nil, text: "●     Unknown", textColor: Colors.systemWhite)
+    let femaleButton = UIFabric.shared.makeButton(text: "●     Female", textColor: Colors.systemWhite)
+    let maleButton = UIFabric.shared.makeButton(text: "●     Male", textColor: Colors.systemWhite)
+    let genderlessButton = UIFabric.shared.makeButton(text: "●     Genderless", textColor: Colors.systemWhite)
+    let unknownGenderButton = UIFabric.shared.makeButton(backColor: nil, text: "●     Unknown", textColor: Colors.systemWhite)
     
     // Основной контейнер, в котором лежат все элементы
     func createContainerStack() -> UIStackView {
         statusRButton.contentHorizontalAlignment = .trailing
         genderRButton.contentHorizontalAlignment = .trailing
         
-        let topS = UIFabric.shared().makeAStack(with: [statusLLabel, statusRButton], axis: .horizontal, distribution: .fillEqually, alignment: .fill, spacing: .zero)
-        let botS = UIFabric.shared().makeAStack(with: [aliveButton, deadButton, unknownButton], axis: .vertical, distribution: .equalSpacing, alignment: .leading, spacing: 0)
-        let statusStack = UIFabric.shared().makeAStack(with: [topS, botS], axis: .vertical, distribution: .fill, alignment: .fill, spacing: 15)
+        let topS = UIFabric.shared.makeAStack(with: [statusLLabel, statusRButton], axis: .horizontal, distribution: .fillEqually, alignment: .fill, spacing: .zero)
+        let botS = UIFabric.shared.makeAStack(with: [aliveButton, deadButton, unknownButton], axis: .vertical, distribution: .equalSpacing, alignment: .leading, spacing: 0)
+        let statusStack = UIFabric.shared.makeAStack(with: [topS, botS], axis: .vertical, distribution: .fill, alignment: .fill, spacing: 15)
         
-        let topG = UIFabric.shared().makeAStack(with: [genderLLabel, genderRButton], axis: .horizontal, distribution: .fillEqually, alignment: .fill, spacing: .zero)
-        let botG = UIFabric.shared().makeAStack(with: [femaleButton, maleButton, genderlessButton, unknownGenderButton], axis: .vertical, distribution: .equalSpacing, alignment: .leading, spacing: 0)
-        let genderStack = UIFabric.shared().makeAStack(with: [topG, botG], axis: .vertical, distribution: .fill, alignment: .fill, spacing: 15)
+        let topG = UIFabric.shared.makeAStack(with: [genderLLabel, genderRButton], axis: .horizontal, distribution: .fillEqually, alignment: .fill, spacing: .zero)
+        let botG = UIFabric.shared.makeAStack(with: [femaleButton, maleButton, genderlessButton, unknownGenderButton], axis: .vertical, distribution: .equalSpacing, alignment: .leading, spacing: 0)
+        let genderStack = UIFabric.shared.makeAStack(with: [topG, botG], axis: .vertical, distribution: .fill, alignment: .fill, spacing: 15)
         
-        let resultStack = UIFabric.shared().makeAStack(with: [statusStack, genderStack], axis: .vertical, distribution: .fillProportionally, alignment: .fill, spacing: 25)
+        let resultStack = UIFabric.shared.makeAStack(with: [statusStack, genderStack], axis: .vertical, distribution: .fillProportionally, alignment: .fill, spacing: 25)
         
         // Добавляем tag для работы с элементами
         statusStack.tag = 1

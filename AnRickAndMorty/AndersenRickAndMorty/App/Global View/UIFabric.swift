@@ -10,9 +10,7 @@ import UIKit
 // В этом классе собрано все для создания UI элементов. Можно было бы в extension, но хотелось попрактиковать singleton
 class UIFabric {
     // Синглтон, почему бы и нет
-    static func shared() -> UIFabric {
-        return UIFabric()
-    }
+    static let shared = UIFabric()
     
     private init() { }
     
@@ -45,22 +43,24 @@ class UIFabric {
         return imgv
     }
     
-    func makeLabel(text: String? = nil, textColor: UIColor = Colors.systemBlack, fontSize: CGFloat = 28, textAlignment: NSTextAlignment = .center) -> UILabel {
+    func makeLabel(text: String? = nil, textColor: UIColor = Colors.systemBlack, textAlignment: NSTextAlignment = .center, font: UIFont = UIFont.systemFont(ofSize: 28), horizontalHugPriority: UILayoutPriority = .defaultLow) -> UILabel {
         let label = UILabel()
         label.textColor = textColor
-        label.font = UIFont.systemFont(ofSize: fontSize)
+        label.font = font
         label.textAlignment = textAlignment
         label.text = text
+        label.setContentHuggingPriority(horizontalHugPriority, for: .horizontal)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }
     
-    func makeAStack(with views: [UIView], axis: NSLayoutConstraint.Axis = .vertical, distribution: UIStackView.Distribution, alignment: UIStackView.Alignment = .fill, spacing: CGFloat = 30) -> UIStackView {
+    func makeAStack(with views: [UIView], axis: NSLayoutConstraint.Axis = .vertical, distribution: UIStackView.Distribution, alignment: UIStackView.Alignment = .fill, spacing: CGFloat = 30, isHidden: Bool = false) -> UIStackView {
         let stackView = UIStackView(arrangedSubviews: views)
         stackView.axis = axis
         stackView.spacing = spacing
         stackView.distribution = distribution
         stackView.alignment = alignment
+        stackView.isHidden = isHidden
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }

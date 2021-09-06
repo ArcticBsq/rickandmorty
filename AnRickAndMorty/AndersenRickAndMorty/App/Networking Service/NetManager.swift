@@ -8,9 +8,7 @@
 import UIKit
 
 class NetManager {
-    static func shared() -> NetManager {
-        return NetManager()
-    }
+    static let shared = NetManager()
     // Метод загрузки данных из API
     func fetchFilterDataPage(url: String, completion: @escaping ([Package]?, String?, Int?) -> ()) {
         guard let url = URL(string: url) else { return }
@@ -79,17 +77,6 @@ class NetManager {
         }}
         return ""
     }
-    // Для загрузки картинок, используемых в Collection View Cell
-    func loadImage(from: Package, completion: @escaping (UIImage) -> Void) {
-        DispatchQueue.global().async {
-            guard let imgURL = URL(string: from.image!) else {
-                print("No image URL")
-                return
-            }
-            guard let imgData = try? Data.init(contentsOf: imgURL) else { return }
-            let image = UIImage.init(data: imgData)
-            completion(image!)
-    }}
     
     private init() {}
 }
