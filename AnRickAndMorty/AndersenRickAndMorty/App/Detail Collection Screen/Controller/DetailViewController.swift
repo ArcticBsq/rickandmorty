@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+final class DetailViewController: UIViewController {
     // Массив где хранятся объекты, полученные из API
     private var objects = [Package]() {
         didSet {
@@ -55,6 +55,7 @@ class DetailViewController: UIViewController {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
     var isFirstLoad = true
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         if !isFirstLoad {
@@ -192,8 +193,8 @@ class DetailViewController: UIViewController {
     }
     // Функция возвращает отфилmтрованный массив по критерию - "Содержится в имени object"
     private func filterContentWithSettings(_ array: [Package]) -> [Package] {
-        let status = DataManager.shared().loadStringFromDefaults(from: "status")
-        let gender = DataManager.shared().loadStringFromDefaults(from: "gender")
+        let status = DataManager.shared.loadStringFromDefaults(from: "status")
+        let gender = DataManager.shared.loadStringFromDefaults(from: "gender")
         let resultArray = array.filter { (object: Package) -> Bool in
             // Если происходит фильтрация по status + gender
             if existsInDefaults("status") && existsInDefaults("gender") {
@@ -213,7 +214,7 @@ class DetailViewController: UIViewController {
     
     // Проверка существует ли значение по ключу в user defaults
     private func existsInDefaults(_ key: String) -> Bool {
-        return DataManager.shared().loadStringFromDefaults(from: key) != nil
+        return DataManager.shared.loadStringFromDefaults(from: key) != nil
     }
     
     private let searchController = UISearchController(searchResultsController: nil)

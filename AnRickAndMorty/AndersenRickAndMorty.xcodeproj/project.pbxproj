@@ -11,7 +11,6 @@
 		F612BD9C26C13F3C00A628F3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F612BD9B26C13F3C00A628F3 /* Constants.swift */; };
 		F639930426CD15EB00A3ABB3 /* DetailObjectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F639930326CD15EB00A3ABB3 /* DetailObjectController.swift */; };
 		F639930926CD1ADE00A3ABB3 /* MainButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F639930826CD1ADE00A3ABB3 /* MainButton.swift */; };
-		F68FA7E526BA7F1500F8E379 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */; };
 		F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68FA7E626BA7F1500F8E379 /* SceneDelegate.swift */; };
 		F68FA7E926BA7F1500F8E379 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F68FA7E826BA7F1500F8E379 /* ViewController.swift */; };
 		F68FA7EE26BA7F1600F8E379 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F68FA7ED26BA7F1600F8E379 /* Assets.xcassets */; };
@@ -23,6 +22,7 @@
 		F6D1C30926DE051800046E0A /* ContainerFilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C30826DE051800046E0A /* ContainerFilterView.swift */; };
 		F6D1C31126DE3DFC00046E0A /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */; };
 		F6D1C31726DE4A7E00046E0A /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D1C31626DE4A7E00046E0A /* DataManager.swift */; };
+		F6D22C0426E6B78100A468CC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6D22C0326E6B78100A468CC /* AppDelegate.swift */; };
 		F6E3FB9226E1EE0800BCBBF7 /* ModelDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E3FB9126E1EE0800BCBBF7 /* ModelDetail.swift */; };
 		F6E3FB9526E225CC00BCBBF7 /* NoResponseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E3FB9426E225CC00BCBBF7 /* NoResponseController.swift */; };
 		F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E7BA6626CCF41700F04FD5 /* NetManager.swift */; };
@@ -35,7 +35,6 @@
 		F639930326CD15EB00A3ABB3 /* DetailObjectController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailObjectController.swift; sourceTree = "<group>"; };
 		F639930826CD1ADE00A3ABB3 /* MainButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainButton.swift; sourceTree = "<group>"; };
 		F68FA7E126BA7F1500F8E379 /* AndersenRickAndMorty.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndersenRickAndMorty.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F68FA7E626BA7F1500F8E379 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		F68FA7E826BA7F1500F8E379 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F68FA7ED26BA7F1600F8E379 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -48,6 +47,7 @@
 		F6D1C30826DE051800046E0A /* ContainerFilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerFilterView.swift; sourceTree = "<group>"; };
 		F6D1C31026DE3DFC00046E0A /* FilterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
 		F6D1C31626DE4A7E00046E0A /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		F6D22C0326E6B78100A468CC /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F6E3FB9126E1EE0800BCBBF7 /* ModelDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDetail.swift; sourceTree = "<group>"; };
 		F6E3FB9426E225CC00BCBBF7 /* NoResponseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoResponseController.swift; sourceTree = "<group>"; };
 		F6E7BA6626CCF41700F04FD5 /* NetManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetManager.swift; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 		F608F27626CBDA5100BFCCF7 /* Delegates */ = {
 			isa = PBXGroup;
 			children = (
-				F68FA7E426BA7F1500F8E379 /* AppDelegate.swift */,
+				F6D22C0326E6B78100A468CC /* AppDelegate.swift */,
 				F68FA7E626BA7F1500F8E379 /* SceneDelegate.swift */,
 			);
 			path = Delegates;
@@ -385,7 +385,6 @@
 				F68FA7E926BA7F1500F8E379 /* ViewController.swift in Sources */,
 				F6D1C30926DE051800046E0A /* ContainerFilterView.swift in Sources */,
 				F6E7BA6726CCF41700F04FD5 /* NetManager.swift in Sources */,
-				F68FA7E526BA7F1500F8E379 /* AppDelegate.swift in Sources */,
 				F6CD4FA326C11E5000805C39 /* DetailViewController.swift in Sources */,
 				F639930926CD1ADE00A3ABB3 /* MainButton.swift in Sources */,
 				F68FA7E726BA7F1500F8E379 /* SceneDelegate.swift in Sources */,
@@ -395,6 +394,7 @@
 				F69A7B6326C2747800A7FBA4 /* CustomCell.swift in Sources */,
 				F608F28426CBE76A00BFCCF7 /* UIFabric.swift in Sources */,
 				F6EB390626D79817000FC816 /* DetailObjectVCStack.swift in Sources */,
+				F6D22C0426E6B78100A468CC /* AppDelegate.swift in Sources */,
 				F612BD9C26C13F3C00A628F3 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
