@@ -36,4 +36,22 @@ class DataManager {
     func deleteFromDefaults(from key: String) {
         defaults.removeObject(forKey: key)
     }
+    
+    private func existsInDefaults(_ key: String) -> Bool {
+        return loadStringFromDefaults(from: key) != nil
+    }
+    
+    func statusKeyExistsInDefaults() -> Bool {
+        return DataManager.shared.existsInDefaults(UserDefaultsKeys.status)
+    }
+    func genderKeyExistsInDefaults() -> Bool {
+        return DataManager.shared.existsInDefaults(UserDefaultsKeys.gender)
+    }
 }
+
+enum UserDefaultsKeys {
+    static let gender: String = "gender"
+    static let status: String = "status"
+    static let filterSettingsChanged: String = "filtersettingschanged"
+}
+

@@ -54,11 +54,11 @@ class NetManager {
         if isFiltering {
             switch title {
             case "Characters":
-                return APIconstants.charactersFilterName
+                return ApiUrls.charactersFilterName
             case "Locations":
-                return APIconstants.locationsFilterName
+                return ApiUrls.locationsFilterName
             case "Episodes":
-                return APIconstants.episodesFilterName
+                return ApiUrls.episodesFilterName
             default:
                 print("Incorrect word in switch statement in DetailVC")
                 break
@@ -66,11 +66,11 @@ class NetManager {
         } else {
             switch title {
             case "Characters":
-                return APIconstants.characters
+                return ApiUrls.characters
             case "Locations":
-                return APIconstants.locations
+                return ApiUrls.locations
             case "Episodes":
-                return APIconstants.episodes
+                return ApiUrls.episodes
             default:
                 print("Incorrect word in switch statement in DetailVC")
                 break
