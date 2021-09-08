@@ -8,6 +8,10 @@
 import UIKit
 
 final class DetailViewController: UIViewController {
+    //MARK: Services
+    private let dataService = DataManager.shared
+    private let networkService = NetManager.shared
+    
     // Массив где хранятся объекты, полученные из API
     private var objects = [Package]() {
         didSet {
@@ -54,11 +58,13 @@ final class DetailViewController: UIViewController {
         // Убираем слова из кнопки назад
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
+    // Первый показ этого контроллера
     var isFirstLoad = true
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        if !isFirstLoad {
+        guard let isFilterSettingsChanged = dataService.loadBoolFromDefaults(from: UserDefaultsKeys.filterSettingsChanged) else { return }
+        if !isFirstLoad && isFilterSettingsChanged{
             loadData()
         } else {
             isFirstLoad = false
@@ -103,12 +109,15 @@ final class DetailViewController: UIViewController {
                 self.objects = array
                 // Если происходит фильтрация с FilterViewController
                 if self.isFiltering {
-                    self.filteredObjects = self.filterContentWithSettings(self.objects)
-                    // Если на экране меньше 8 элементов, происходит загрузка следующей страницы из АПИ
-                    // меньше 8 потому что на экране помещается 6 элементов и чтобы грузилась следующая страница
-                    // в didScroll методе нужна возможность скрола, она появляется, если 7 элементов и больше
-                    if self.filteredObjects.count < 8 {
+                    DispatchQueue.global().async {
+                        self.filteredObjects = Filter.shared.filterContentWithSettings(self.objects)
+                        // Если на экране меньше 8 элементов, происходит загрузка следующей страницы из АПИ
+                        // меньше 8 потому что на экране помещается 6 элементов и чтобы грузилась следующая страница
+                        // в didScroll методе нужна возможность скрола, она появляется, если 7 элементов и больше
+                        if self.filteredObjects.count < 8 && self.objects.count < self.totalObjectsCount ?? 0 {
+                            print("Is filtering = \(self.isFiltering)")
                             self.loadNextPage()
+                        }
                     }
     }}}
         DispatchQueue.global().async {
@@ -134,10 +143,13 @@ final class DetailViewController: UIViewController {
                         self.objects = Array(Set(self.objects + array))
                         self.objects.sort {$0.id < $1.id }
                         if self.isFiltering {
-                            self.filteredObjects = self.filterContentWithSettings(self.objects)
+                            
+                            self.filteredObjects = Filter.shared.filterContentWithSettings(self.objects)
                             if self.filteredObjects.count < 8 {
+                                print("Is Filterong = \(self.isFiltering)")
                                 self.loadNextPage()
                         }
+                        
     }}}
                 NetManager.shared.fetchFilterDataPage(url: url) { [weak self] objects, nextPage, totalObjects in
                     guard let strongSelf = self else { return }
@@ -184,39 +196,15 @@ final class DetailViewController: UIViewController {
     }
     // Для отслеживания состояния фильтрации, True если происходит фильтрация по gender/status
     private var isFiltering: Bool {
-        let result = controllerTitle == "Characters" ? (existsInDefaults("status") || existsInDefaults("gender")) : false
+        let result = controllerTitle == "Characters" ? dataService.statusKeyExistsInDefaults() || dataService.genderKeyExistsInDefaults() : false
         return result
     }
     // Ведется ли поиск по имени в NavigationBar
     private var isSearching: Bool {
         return searchController.isActive && !isSearchBarEmpty
     }
-    // Функция возвращает отфилmтрованный массив по критерию - "Содержится в имени object"
-    private func filterContentWithSettings(_ array: [Package]) -> [Package] {
-        let status = DataManager.shared.loadStringFromDefaults(from: "status")
-        let gender = DataManager.shared.loadStringFromDefaults(from: "gender")
-        let resultArray = array.filter { (object: Package) -> Bool in
-            // Если происходит фильтрация по status + gender
-            if existsInDefaults("status") && existsInDefaults("gender") {
-            // Возвращаем массив элементов, у которых object + gender == object + gender из defaults
-                return object.status?.lowercased() == status && object.gender?.lowercased() == gender
-            // Если фильтрация только по Status
-            } else if existsInDefaults("status") && !existsInDefaults("gender") {
-                return object.status?.lowercased() == status
-            // Если фильтрация только по Gender
-            } else if !existsInDefaults("status") && existsInDefaults("gender") {
-                return object.gender?.lowercased() == gender
-            }
-            return false
-        }
-        return resultArray
-    }
     
-    // Проверка существует ли значение по ключу в user defaults
-    private func existsInDefaults(_ key: String) -> Bool {
-        return DataManager.shared.loadStringFromDefaults(from: key) != nil
-    }
-    
+    //MARK: Search controller
     private let searchController = UISearchController(searchResultsController: nil)
     private func setupSearchController() {
         // Информирует о любых изменениях текста

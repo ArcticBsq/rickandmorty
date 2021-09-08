@@ -23,8 +23,18 @@ final class FilterViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        previousStatus = DataManager.shared.loadStringFromDefaults(from: "status")
-        previousGender = DataManager.shared.loadStringFromDefaults(from: "gender")
+        previousStatus = DataManager.shared.loadStringFromDefaults(from: UserDefaultsKeys.status)
+        previousGender = DataManager.shared.loadStringFromDefaults(from: UserDefaultsKeys.gender)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        saveFilterSettingsChangeStatus()
+    }
+    
+    private func saveFilterSettingsChangeStatus(){
+        let result = previousStatus == DataManager.shared.loadStringFromDefaults(from: UserDefaultsKeys.status) && previousGender == DataManager.shared.loadStringFromDefaults(from: UserDefaultsKeys.gender) ? false : true
+        DataManager.shared.saveToDefaults(result, for: UserDefaultsKeys.filterSettingsChanged)
     }
     
     // Инициализируем стеквью, в котором весь UI

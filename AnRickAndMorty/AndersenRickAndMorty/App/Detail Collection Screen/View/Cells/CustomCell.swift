@@ -46,14 +46,13 @@ class CustomCell: UICollectionViewCell {
     private func displayObject(_ object: Package?) {
       self.object = object
       if let object = object {
-        if object.air_date != nil {
-            label.text = "\(object.id). \(object.name)"
-        } else {
-            label.text = object.name
-        }
+        
+        label.text = object.air_date != nil ? "\(object.id). \(object.name)" : object.name
+        
         if object.gender != nil {
             backG.cacheImage(url: URL(string: object.image!)!)
         }
+        
         label.alpha = 1
         backG.alpha = 1
         foreG.alpha = 1
@@ -121,7 +120,6 @@ extension UIImageView {
     
     if let imageFromCache = imageCache.object(forKey: url.absoluteString as NSString) as? UIImage {
         self.image = imageFromCache
-        print("Got it from cash")
         return
     } else {
         URLSession.shared.dataTask(with: url) { data, resp, error in

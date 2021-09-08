@@ -47,8 +47,6 @@ class DetailObjectVCStack {
         
         if let airDate = avatar.air_date { makeTextRowStack(leftText: "Air date:", rightText: airDate, addToParent: innerStack) }
             
-        let outerStack = UIFabric.shared.makeAStack(with: [innerStack], distribution: .fill, spacing: ViewMetrics.detailObjectStackSpacing)
-            
-        return outerStack
+        return innerStack
     }
 }
